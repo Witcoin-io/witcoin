@@ -1,0 +1,16 @@
+Only compile contracts:
+    truffle compile
+
+Initial / reset migrate:
+    truffle migrate --reset --network rinkeby
+
+Exec js file:
+    truffle exec exec/exec-sample.js --network rinkeby
+
+Tests:
+    All test inside ./test folder:
+        truffle test --network rinkeby
+    Specific test:
+        truffle test test/sample-test.js --network rinkeby
+
+

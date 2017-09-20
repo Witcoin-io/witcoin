@@ -1,0 +1,8 @@
+Start rinkeby geth allowing truffle to interact:
+    geth --datadir="BLOCKCHAIN_PATH" --rinkeby --rpc --rpcapi db,eth,net,web3,personal --unlock="DEPLOYER_ADDRESS" --password="PATH_TO_PASSWORD_FILE"
+Where:
+    BLOCKCHAIN_PATH = Path to blockchain data folder
+    DEPLOYER_ADDRESS = Address of the account that will dpeloy the contracts
+    PATH_TO_PASSWORD_FILE = Path to a file containing the plain text password dof the account DEPLOYER_ADDRESS
+
+
