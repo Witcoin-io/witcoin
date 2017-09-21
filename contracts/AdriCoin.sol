@@ -14,7 +14,7 @@ contract AdriCoin is StandardToken {
 
   string public constant name = "AdriCoin";
   string public constant symbol = "ADR";
-  uint8 public constant decimals = 18;
+  uint8 public constant decimals = 8;
 
   uint256 public constant INITIAL_SUPPLY = 10000 * (10 ** uint256(decimals));
 
