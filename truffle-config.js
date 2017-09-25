@@ -8,7 +8,8 @@ module.exports = {
             host: "localhost",
             port: 8545,
             network_id: "*",
-            from: "0xAec3aE5d2BE00bfC91597d7A1b2c43818d84396A"
+            from: "0xAec3aE5d2BE00bfC91597d7A1b2c43818d84396A",
+            gas: 4712388
         },
         rinkeby: {
             host: "localhost", // Connect to geth on the specified ip

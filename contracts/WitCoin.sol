@@ -26,4 +26,10 @@ contract WitCoin is StandardToken {
     balances[msg.sender] = INITIAL_SUPPLY;
   }
 
+    function mint(address _to, uint256 _amount) public returns (bool) {
+        totalSupply = totalSupply.add(_amount);
+        balances[_to] = balances[_to].add(_amount);
+        Transfer(0x0, _to, _amount);
+        return true;
+    }
 }
