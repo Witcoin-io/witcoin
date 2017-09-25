@@ -1,7 +1,7 @@
 pragma solidity ^0.4.11;
 
 
-import "../examples/zeppelin-contracts/token/StandardToken.sol";
+import "./EasyCoinInterface.sol";
 
 
 /**
@@ -10,20 +10,24 @@ import "../examples/zeppelin-contracts/token/StandardToken.sol";
  * Note they can later distribute these tokens as they wish using `transfer` and other
  * `StandardToken` functions.
  */
-contract AdriCoin is StandardToken {
+contract AdriCoin is EasyCoinInterface {
 
-  string public constant name = "AdriCoin";
-  string public constant symbol = "ADR";
-  uint8 public constant decimals = 8;
+    string public constant name = "AdriCoin";
+    string public constant symbol = "ADR";
+    uint8 public constant decimals = 8;
 
-  uint256 public constant INITIAL_SUPPLY = 10000 * (10 ** uint256(decimals));
+    uint256 public constant INITIAL_SUPPLY = 10000 * (10 ** uint256(decimals));
 
-  /**
-   * @dev Constructor that gives msg.sender all of existing tokens.
-   */
-  function AdriCoin() {
-    totalSupply = INITIAL_SUPPLY;
-    balances[msg.sender] = INITIAL_SUPPLY;
-  }
+    /**
+    * @dev Constructor that gives msg.sender all of existing tokens.
+    */
+    function AdriCoin() {
+        totalSupply = INITIAL_SUPPLY;
+        balances[msg.sender] = INITIAL_SUPPLY;
+    }
+
+    function saySomething() public constant returns (bytes32) {
+        return "AdriCoin is the best!";
+    }
 
 }
