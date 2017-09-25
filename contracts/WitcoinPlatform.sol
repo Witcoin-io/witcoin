@@ -30,16 +30,18 @@ contract WitcoinPlatform {
     function register(address witaddress, address author, address c1, address c2, address c3, address c4, uint256 fee, uint256 witcoins) {
 
         //paga taxa registra al registrador.
-//        WitCoin coin = WitCoin(WitcoinAddress);
-//        coin.transferFrom(author, msg.sender, 100000000); // 1W
+        WitCoin coin = WitCoin(WitcoinAddress);
+        coin.transferFrom(author, msg.sender, 100000000); // 1W
 
         //paga el reward a les citacions.
-//        rewardCitations(author, 1, 1);
+        rewardCitations(author, 1, witcoins);
 
         //si tot correcte guardo el registre.
         wits[witaddress] = wit({citations : [c1,c2,c3,c4], reputation : 0});
 
-//        AcknowledgementValidation();
+        if (fee==1){
+        AcknowledgementValidation();
+        }
         //reparticio de moneda
 
     }
