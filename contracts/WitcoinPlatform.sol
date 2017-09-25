@@ -1,4 +1,4 @@
-pragma solidity ^0.4.11;
+pragma solidity 0.4.15;
 
 
 import "./WitCoin.sol";
@@ -9,12 +9,7 @@ contract WitcoinPlatform {
     address WitcoinAddress;
 
     struct wit {
-        address author;
-        address register;
-        address citation1;
-    address citation2;
-    address citation3;
-    address citation4;
+        address[4] citations;
         uint256 reputation;
     }
 
@@ -32,17 +27,17 @@ contract WitcoinPlatform {
         return adr;
     }
 
-    function register(address witaddress, address author, address citation1, address citation2,address citation3,address citation4, uint256 fee, uint256 witcoins) {
+    function register(address witaddress, address author, address c1, address c2, address c3, address c4, uint256 fee, uint256 witcoins) {
 
         //paga taxa registra al registrador.
 //        WitCoin coin = WitCoin(WitcoinAddress);
 //        coin.transferFrom(author, msg.sender, 100000000); // 1W
 
         //paga el reward a les citacions.
-//        rewardCitations(author, 1, 3);
+//        rewardCitations(author, 1, 1);
 
         //si tot correcte guardo el registre.
-        wits[witaddress] = wit({author : author, register : msg.sender, citation1 : citation1,citation2 : citation2,citation3 : citation3,citation4 : citation4, reputation : 0});
+        wits[witaddress] = wit({citations : [c1,c2,c3,c4], reputation : 0});
 
 //        AcknowledgementValidation();
         //reparticio de moneda
