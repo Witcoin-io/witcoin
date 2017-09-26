@@ -7,6 +7,7 @@ import "./WitCoin.sol";
 contract WitcoinPlatform {
 
     address WitcoinAddress;
+    address WitsReceiver;
 
     struct wit {
         address[4] citations;
@@ -17,73 +18,41 @@ contract WitcoinPlatform {
 
     function WitcoinPlatform(address a) {
         WitcoinAddress = a;
+        WitsReceiver = 0xf1f42f995046E67b79DD5eBAfd224CE964740Da3;
+    }
+
+    function register(address witaddress, address author, address c1, address c2, address c3, address c4, uint256 fee, uint witcoins) {
+        uint maxCitations = fee;
+        uint maxLevel = witcoins;
+
+        //paga taxa registra al registrador.
+        WitCoin coin = WitCoin(WitcoinAddress);
+        coin.transferFrom(author, msg.sender, 100000000); // 1 W
+
+        //paga el reward a les citacions.
+        rewardCitations(author, 50000000, maxLevel, maxCitations); // 0.5 W
+
+        //si tot correcte guardo el registre.
+        wits[witaddress] = wit({citations : [c1,c2,c3,c4], reputation : 100});
+
+        // Creacio moneda
+        AcknowledgementValidation();
+    }
+
+    function rewardCitations(address author, uint256 amount, uint level, uint citations){
+
+        WitCoin coin = WitCoin(WitcoinAddress);
+
+        if (level != 0) {
+            for (uint i = 0; i < citations; i++) {
+                coin.transferFrom(author, WitsReceiver, amount);
+                rewardCitations(author, amount, level - 1, citations);
+            }
+        }
     }
 
     function AcknowledgementValidation(){
         mint();
-    }
-
-    function whatISaid(string adr) returns(string) {
-        return adr;
-    }
-
-    function register(address witaddress, address author, address c1, address c2, address c3, address c4, uint256 fee, uint witcoins) {
-        //paga taxa registra al registrador.
-//        WitCoin coin = WitCoin(WitcoinAddress);
-//        coin.transferFrom(author, msg.sender, 100000000); // 1 W
-
-        //paga el reward a les citacions.
-        rewardCitationsNoRecursive(author, [c1,c2,c3,c4], 50000000, witcoins); // 0.5 W
-
-        //si tot correcte guardo el registre.
-        wits[witaddress] = wit({citations : [c1,c2,c3,c4], reputation : 10});
-
-        // Creacio moneda
-        if (fee == 1){
-            AcknowledgementValidation();
-        }
-
-    }
-
-    function rewardCitations(address author, uint256 amount, uint level){
-
-        WitCoin coin = WitCoin(WitcoinAddress);
-
-
-        if (level == 0) {
-            return;
-        }
-        else {
-            for (uint i = 0; i < 4; i++) {
-                coin.transferFrom(author, 0xf1f42f995046E67b79DD5eBAfd224CE964740Da3, 50000000); // 0.5 W
-                rewardCitations(author, 1, level - 1);
-                //send wits
-            }
-        }
-    }
-
-    function rewardCitationsNoRecursive(address author, address[4] citations, uint256 amount, uint maxLevel){
-        WitCoin coin = WitCoin(WitcoinAddress);
-        for (uint i = 0; i < 4; i++) {
-            if (citations[i] != 0x0) {
-                coin.transferFrom(author, 0xf1f42f995046E67b79DD5eBAfd224CE964740Da3, amount);
-                if (maxLevel > 1) {
-                    for (uint j = 0; j < 4; j++) {
-                        coin.transferFrom(author, 0xf1f42f995046E67b79DD5eBAfd224CE964740Da3, amount);
-                        if (maxLevel > 2) {
-                            for (uint k = 0; k < 4; k++) {
-                                coin.transferFrom(author, 0xf1f42f995046E67b79DD5eBAfd224CE964740Da3, amount);
-                                if (maxLevel > 3) {
-                                    for (uint m = 0; m < 4; m++) {
-                                        coin.transferFrom(author, 0xf1f42f995046E67b79DD5eBAfd224CE964740Da3, amount);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 
     function mint() {
