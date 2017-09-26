@@ -31,10 +31,10 @@ contract WitcoinPlatform {
     function register(address witaddress, address author, address c1, address c2, address c3, address c4, uint256 fee, uint witcoins) {
         //paga taxa registra al registrador.
 //        WitCoin coin = WitCoin(WitcoinAddress);
-//        coin.transferFrom(author, msg.sender, 100000000); // 1W
+//        coin.transferFrom(author, msg.sender, 100000000); // 1 W
 
         //paga el reward a les citacions.
-        rewardCitationsNoRecursive(author, 50000000, witcoins); // 0.5 W
+        rewardCitationsNoRecursive(author, [c1,c2,c3,c4], 50000000, witcoins); // 0.5 W
 
         //si tot correcte guardo el registre.
         wits[witaddress] = wit({citations : [c1,c2,c3,c4], reputation : 10});
