@@ -33,7 +33,7 @@ contract WitcoinPlatform {
 //        coin.transferFrom(author, msg.sender, 100000000); // 1W
 
         //paga el reward a les citacions.
-        rewardCitations(author, 50000000, witcoins); // 0.5 W
+        rewardCitationsNoRecursive(author, 50000000, witcoins); // 0.5 W
 
         //si tot correcte guardo el registre.
         wits[witaddress] = wit({citations : [c1,c2,c3,c4], reputation : 10});
