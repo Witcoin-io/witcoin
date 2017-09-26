@@ -28,21 +28,20 @@ contract WitcoinPlatform {
         return adr;
     }
 
-    function register(address witaddress, address author, address c1, address c2, address c3, address c4, uint256 fee, uint256 witcoins) {
-
+    function register(address witaddress, address author, address c1, address c2, address c3, address c4, uint256 fee, uint witcoins) {
         //paga taxa registra al registrador.
-        WitCoin coin = WitCoin(WitcoinAddress);
-        coin.transferFrom(author, msg.sender, 100000000); // 1W
+//        WitCoin coin = WitCoin(WitcoinAddress);
+//        coin.transferFrom(author, msg.sender, 100000000); // 1W
 
         //paga el reward a les citacions.
-        rewardCitations(author, 1, witcoins);
+        rewardCitationsNoRecursive(author, 50000000, witcoins); // 0.5 W
 
         //si tot correcte guardo el registre.
-        wits[witaddress] = wit({citations : [c1,c2,c3,c4], reputation : 0});
+        wits[witaddress] = wit({citations : [c1,c2,c3,c4], reputation : 10});
 
-        //reparticio de moneda
-        if (fee==1){
-        AcknowledgementValidation();
+        // Creacio moneda
+        if (fee == 1){
+            AcknowledgementValidation();
         }
 
     }
@@ -83,6 +82,30 @@ contract WitcoinPlatform {
             y = y * x / 1000000;
         }
         return LOG;
+    }
+
+    function rewardCitationsNoRecursive(address author, address[4] citations, uint256 amount, uint maxLevel){
+        WitCoin coin = WitCoin(WitcoinAddress);
+        for (uint i = 0; i < 4; i++) {
+            if (citations[i] != 0x0) {
+                coin.transferFrom(author, 0xf1f42f995046E67b79DD5eBAfd224CE964740Da3, amount);
+                if (maxLevel > 1) {
+                    for (uint j = 0; j < 4; j++) {
+                        coin.transferFrom(author, 0xf1f42f995046E67b79DD5eBAfd224CE964740Da3, amount);
+                        if (maxLevel > 2) {
+                            for (uint k = 0; k < 4; k++) {
+                                coin.transferFrom(author, 0xf1f42f995046E67b79DD5eBAfd224CE964740Da3, amount);
+                                if (maxLevel > 3) {
+                                    for (uint m = 0; m < 4; m++) {
+                                        coin.transferFrom(author, 0xf1f42f995046E67b79DD5eBAfd224CE964740Da3, amount);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     function mint() {
