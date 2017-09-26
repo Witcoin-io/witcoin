@@ -7,6 +7,7 @@ import "./WitCoin.sol";
 contract WitcoinPlatform {
 
     address WitcoinAddress;
+    int n = 1;
 
     struct wit {
         address[4] citations;
@@ -39,10 +40,10 @@ contract WitcoinPlatform {
         //si tot correcte guardo el registre.
         wits[witaddress] = wit({citations : [c1,c2,c3,c4], reputation : 0});
 
+        //reparticio de moneda
         if (fee==1){
         AcknowledgementValidation();
         }
-        //reparticio de moneda
 
     }
 
@@ -63,12 +64,34 @@ contract WitcoinPlatform {
         }
     }
 
+    function log(uint256 value) returns(uint256) {
+        uint256 x = value;
+        uint256 LOG = 0;
+        while (x >= 1500000) {
+            LOG = LOG + 405465;
+            x = x * 2 / 3;
+        }
+        x = x - 1000000;
+        uint256 y = x;
+        uint256 i = 1;
+        while (i < 10){
+            LOG = LOG + (y / i);
+            i = i + 1;
+            y = y * x / 1000000;
+            LOG = LOG - (y / i);
+            i = i + 1;
+            y = y * x / 1000000;
+        }
+        return LOG;
+    }
+
     function mint() {
         address payingAccount = msg.sender;
-//        int c = 10 ** 9;
-//        int kn = n / c;
+        uint256 c = 10 ** 9;
+        uint256 kn = n / c;
+        //uint256 generatedWitcoins = 1/log(kn);
         uint256 generatedWitcoins = 100000000; // 1 witcoin
-//        n = n + 1;
+        n = n + 1;
         supply(generatedWitcoins);
     }
 
