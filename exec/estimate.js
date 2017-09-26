@@ -5,7 +5,7 @@ var WitCoin = artifacts.require("./WitCoin.sol");
 module.exports = function(callback) {
     var platform;
     var coin;
-    var logger = fs.createWriteStream("D:/test.wit", {
+    var logger = fs.createWriteStream("estimations.txt", {
         flags: 'w'
     });
 
