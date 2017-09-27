@@ -7,10 +7,14 @@ import "./WitCoin.sol";
 contract WitcoinPlatform {
 
     address WitcoinAddress;
-    uint256 t = 10;
     address WitsReceiver;
     address WitcoinClub;
+
+    uint256 t = 10;
+    uint256 MAX_DIVISIONS = 100;
+
     event info(string txt, uint256 value);
+    event debug(string txt, uint256 value);
 
     struct wit {
         address[] citations;
@@ -34,7 +38,7 @@ contract WitcoinPlatform {
         coin.transferFrom(author, msg.sender, 100000000); // 1 W
 
         //paga el reward a les citacions.
-        rewardCitations(author, 50000000, maxLevel, maxCitations); // 0.5 W
+        rewardCitations(author, 50000000, 0, maxLevel, maxCitations); // 0.5 W
 
         //si tot correcte guardo el registre.
         wits[witaddress].reputation = 100;
@@ -47,15 +51,17 @@ contract WitcoinPlatform {
         uint256 generatedWitcoins = AcknowledgementValidation();
     }
 
-    function rewardCitations(address author, uint256 amount, uint level, uint citations){
+    function rewardCitations(address author, uint256 amount, uint256 current, uint level, uint citations) {
 
         WitCoin coin = WitCoin(WitcoinAddress);
 
-        if (level != 0) {
+        if (level != 0 && current < MAX_DIVISIONS) {
             for (uint i = 0; i < citations; i++) {
-                //coin.transferFrom(author, WitsReceiver, amount);
-                coin.transfereixBarat(author, WitsReceiver, amount);
-                rewardCitations(author, amount, level - 1, citations);
+                if (current < MAX_DIVISIONS) {
+                    current++;
+                    coin.transferCheaper(author, WitsReceiver, amount);
+                    current = rewardCitations(author, amount, current, level - 1, citations);
+                }
             }
         }
     }

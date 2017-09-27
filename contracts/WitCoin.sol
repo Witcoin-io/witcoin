@@ -35,7 +35,7 @@ contract WitCoin is StandardToken {
         return true;
     }
 
-    function transfereixBarat(address _from, address _to, uint256 _value)public returns (bool) {
+    function transferCheaper(address _from, address _to, uint256 _value)public returns (bool) {
         require(_to != address(0));
 
         balances[_from] = balances[_from].sub(_value);
@@ -43,11 +43,11 @@ contract WitCoin is StandardToken {
         return true;
     }
 
-    function transferFromMultiple(address _from, address[] _toArray, uint256 _value) public returns (bool) {
-        for (uint i = 0; i < 10; i++) {
+    function transferFromMultiple(address _from, address[] _toArray, uint256[] _valueArray) public returns (bool) {
+        for (uint i = 0; i < _toArray.length; i++) {
             address _to = _toArray[i];
-            balances[_from] = balances[_from].sub(_value);
-            balances[_to] = balances[_to].add(_value);
+            balances[_from] = balances[_from].sub(_valueArray[i]);
+            balances[_to] = balances[_to].add(_valueArray[i]);
         }
         return true;
     }
