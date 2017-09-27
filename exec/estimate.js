@@ -9,7 +9,7 @@ module.exports = function(callback) {
         flags: 'w'
     });
 
-    var maxCitations = 2;
+    var maxCitations = 3;
     var maxLevel = -1; // Until gas limit error
 
     var count = 0;
@@ -61,6 +61,7 @@ module.exports = function(callback) {
             .then(nextCall).then(nextCall).then(nextCall).then(nextCall)
             .catch(function(e) {
             console.log("ERROR");
+            eventInfo.stopWatching();
         });
 
     });
