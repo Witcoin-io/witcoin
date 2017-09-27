@@ -11,7 +11,7 @@ contract WitcoinPlatform {
     address WitsReceiver;
 
     struct wit {
-        address[4] citations;
+        address[] citations;
         uint256 reputation;
     }
 
@@ -34,7 +34,11 @@ contract WitcoinPlatform {
         rewardCitations(author, 50000000, maxLevel, maxCitations); // 0.5 W
 
         //si tot correcte guardo el registre.
-        wits[witaddress] = wit({citations : [c1,c2,c3,c4], reputation : 100});
+        wits[witaddress].reputation = 100;
+        if (c1 != 0x0) wits[witaddress].citations.push(c1);
+        if (c2 != 0x0) wits[witaddress].citations.push(c2);
+        if (c3 != 0x0) wits[witaddress].citations.push(c3);
+        if (c4 != 0x0) wits[witaddress].citations.push(c4);
 
         // Creacio moneda
         AcknowledgementValidation();
