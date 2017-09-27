@@ -9,7 +9,7 @@ module.exports = function(callback) {
         flags: 'w'
     });
 
-    var maxCitations = 3;
+    var maxCitations = 2;
     var maxLevel = -1; // Until gas limit error
 
     var count = 0;
@@ -43,6 +43,8 @@ module.exports = function(callback) {
     // Pre deployed contract
     WitcoinPlatform.deployed().then(function(ins1) {
         platform = ins1;
+        var eventInfo = platform.info({txt: "txt"}, {value: "value"});
+        eventInfo.watch(function(error, response) { console.log("event received: "+response.args.txt+" Value: "+response.args.value); });
         WitCoin.deployed().then(function(ins2) {
             coin = ins2;
             return coin.approve(WitcoinPlatform.address, 2000 * Math.pow(10, 8));
