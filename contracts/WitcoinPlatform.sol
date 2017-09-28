@@ -8,7 +8,13 @@ contract WitcoinPlatform {
     address WitcoinAddress;
     address SupplyAddress;
     address WitsReceiver;
+    address WitcoinClub;
+
+    uint256 t = 10;
+    uint256 MAX_DIVISIONS = 1000;
+
     event info(string txt, uint256 value);
+    event debug(string txt, uint256 value);
 
     struct wit {
         address[] citations;
@@ -24,17 +30,20 @@ contract WitcoinPlatform {
     }
 
     function register(address witaddress, address author, address c1, address c2, address c3, address c4, uint256 fee, uint witcoins) {
+        WitCoin coin = WitCoin(WitcoinAddress);
         uint maxCitations = fee;
         uint maxLevel = witcoins;
 
-        //paga taxa registre al registrador.
-        WitCoin coin = WitCoin(WitcoinAddress);
-        coin.transferFrom(author, msg.sender, 100000000); // 1 W
+        // Author to contract
+        coin.transferFrom(author, address(this), 100 * (10 ** 8)); // 100 W
 
-        //paga el reward a les citacions.
-        rewardCitations(author, 50000000, maxLevel, maxCitations); // 0.5 W
+        // Paga taxa registra al registrador.
+        coin.transfer(msg.sender, 1 * (10 ** 8)); // 1 W
 
-        //si tot correcte guardo el registre.
+        // Paga el reward a les citacions.
+        rewardCitations(0.5 * (10 ** 8), 0, maxLevel, maxCitations); // 0.5 W
+
+        // Si tot correcte guardo el registre.
         wits[witaddress].reputation = 100;
         if (c1 != 0x0) wits[witaddress].citations.push(c1);
         if (c2 != 0x0) wits[witaddress].citations.push(c2);
@@ -46,16 +55,20 @@ contract WitcoinPlatform {
         supply.CoinSupply();
     }
 
-    function rewardCitations(address author, uint256 amount, uint level, uint citations){
+    function rewardCitations(uint256 amount, uint256 current, uint level, uint citations) returns(uint256) {
 
         WitCoin coin = WitCoin(WitcoinAddress);
 
-        if (level != 0) {
+        if (level != 0 && current < MAX_DIVISIONS) {
             for (uint i = 0; i < citations; i++) {
-                //coin.transferFrom(author, WitsReceiver, amount);
-                coin.transfereixBarat(author, WitsReceiver, amount);
-                rewardCitations(author, amount, level - 1, citations);
+                if (current < MAX_DIVISIONS) {
+                    current++;
+                    coin.transfer(WitsReceiver, amount);
+                    current = rewardCitations(amount, current, level - 1, citations);
+                }
             }
         }
+
+        return current;
     }
 }
