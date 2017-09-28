@@ -12,13 +12,13 @@ import "../examples/zeppelin-contracts/token/StandardToken.sol";
  */
 contract WitCoin is StandardToken {
 
-    string public constant name = "WitCoin";
+    string public constant name = "Witcoin";
 
-    string public constant symbol = "W";
+    string public constant symbol = "WIT";
 
     uint8 public constant decimals = 8;
 
-    uint256 public constant INITIAL_SUPPLY = 20000 * (10 ** uint256(decimals));
+    uint256 public constant INITIAL_SUPPLY = 288000000 * (10 ** uint256(decimals));
 
     /**
      * @dev Constructor that gives msg.sender all of existing tokens.
