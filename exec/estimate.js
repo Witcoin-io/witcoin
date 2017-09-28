@@ -71,7 +71,7 @@ module.exports = function(callback) {
             .then(nextCall).then(nextCall).then(nextCall).then(nextCall)
             .catch(function(e) {
             console.log("ERROR");
-            console.log(e);
+            eventInfo.stopWatching();
         });
 
     });
