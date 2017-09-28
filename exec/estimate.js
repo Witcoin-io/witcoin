@@ -56,11 +56,13 @@ module.exports = function(callback) {
             coin = ins2;
             return coin.approve(WitcoinPlatform.address, 2000 * Math.pow(10, 8));
         }).then(function(tx) {
-            console.log("Aprove:    "+tx.receipt.gasUsed);
+            console.log("Aproved");
             return platform.register("0xAec3aE5d2BE00bfC91597d7A1b2c43818d84399a", mainAccount,
                                      "0xDbdaA17aa6a854fEE1E127e1917E0a98dad607d1","0xDbdaA17aa6a854fEE1E127e1917E0a98dad607d2","0xDbdaA17aa6a854fEE1E127e1917E0a98dad607d3","0xDbdaA17aa6a854fEE1E127e1917E0a98dad607d4", 1, 1);
         }).then(function(tx) {
-            return platform.register("0xAec3aE5d2BE00bfC91597d7A1b2c43818d843" + converter(count), mainAccount, "0xDbdaA17aa6a854fEE1E127e1917E0a98dad607d1","0xDbdaA17aa6a854fEE1E127e1917E0a98dad607d2","0xDbdaA17aa6a854fEE1E127e1917E0a98dad607d3","0xDbdaA17aa6a854fEE1E127e1917E0a98dad607d4", citations, level);
+            console.log("Firs wit");
+            return platform.register("0xAec3aE5d2BE00bfC91597d7A1b2c43818d843" + converter(count), mainAccount,
+                                     "0xDbdaA17aa6a854fEE1E127e1917E0a98dad607d1","0xDbdaA17aa6a854fEE1E127e1917E0a98dad607d2","0xDbdaA17aa6a854fEE1E127e1917E0a98dad607d3","0xDbdaA17aa6a854fEE1E127e1917E0a98dad607d4", citations, level);
         }).then(nextCall)
             .then(nextCall).then(nextCall).then(nextCall).then(nextCall)
             .then(nextCall).then(nextCall).then(nextCall).then(nextCall)
@@ -69,6 +71,7 @@ module.exports = function(callback) {
             .then(nextCall).then(nextCall).then(nextCall).then(nextCall)
             .catch(function(e) {
             console.log("ERROR");
+            console.log(e);
         });
 
     });

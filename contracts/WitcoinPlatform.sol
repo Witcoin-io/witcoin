@@ -11,7 +11,7 @@ contract WitcoinPlatform {
     address WitcoinClub;
 
     uint256 t = 10;
-    uint256 MAX_DIVISIONS = 100;
+    uint256 MAX_DIVISIONS = 1000;
 
     event info(string txt, uint256 value);
     event debug(string txt, uint256 value);
@@ -30,17 +30,20 @@ contract WitcoinPlatform {
     }
 
     function register(address witaddress, address author, address c1, address c2, address c3, address c4, uint256 fee, uint witcoins) {
+        WitCoin coin = WitCoin(WitcoinAddress);
         uint maxCitations = fee;
         uint maxLevel = witcoins;
 
-        //paga taxa registra al registrador.
-        WitCoin coin = WitCoin(WitcoinAddress);
-        coin.transferFrom(author, msg.sender, 100000000); // 1 W
+        // Author to contract
+        coin.transferFrom(author, address(this), 100 * (10 ** 8)); // 100 W
 
-        //paga el reward a les citacions.
-        rewardCitations(author, 50000000, 0, maxLevel, maxCitations); // 0.5 W
+        // Paga taxa registra al registrador.
+        coin.transfer(msg.sender, 1 * (10 ** 8)); // 1 W
 
-        //si tot correcte guardo el registre.
+        // Paga el reward a les citacions.
+        rewardCitations(0.5 * (10 ** 8), 0, maxLevel, maxCitations); // 0.5 W
+
+        // Si tot correcte guardo el registre.
         wits[witaddress].reputation = 100;
         if (c1 != 0x0) wits[witaddress].citations.push(c1);
         if (c2 != 0x0) wits[witaddress].citations.push(c2);
@@ -51,7 +54,7 @@ contract WitcoinPlatform {
         uint256 generatedWitcoins = AcknowledgementValidation();
     }
 
-    function rewardCitations(address author, uint256 amount, uint256 current, uint level, uint citations) {
+    function rewardCitations(uint256 amount, uint256 current, uint level, uint citations) returns(uint256) {
 
         WitCoin coin = WitCoin(WitcoinAddress);
 
@@ -59,11 +62,13 @@ contract WitcoinPlatform {
             for (uint i = 0; i < citations; i++) {
                 if (current < MAX_DIVISIONS) {
                     current++;
-                    coin.transferCheaper(author, WitsReceiver, amount);
-                    current = rewardCitations(author, amount, current, level - 1, citations);
+                    coin.transfer(WitsReceiver, amount);
+                    current = rewardCitations(amount, current, level - 1, citations);
                 }
             }
         }
+
+        return current;
     }
 
     function log(uint256 value) returns(uint256) {
@@ -84,7 +89,7 @@ contract WitcoinPlatform {
             i = i + 1;
             y = y * x / 1000000;
         }
-        info("log", LOG);
+//        info("log", LOG);
         return LOG / 1000000;
     }
 
@@ -107,10 +112,10 @@ contract WitcoinPlatform {
         //info("log10", log(10));
         //info("log100", log(100));
         //info("log1000", log(1000));
-        info("t", t);
-        info("n", n);
-        info("kn", kn);
-        info("generatedWitcoins", generatedWitcoins);
+//        info("t", t);
+//        info("n", n);
+//        info("kn", kn);
+//        info("generatedWitcoins", generatedWitcoins);
 
         t = t + 1;
         supply(generatedWitcoins);
