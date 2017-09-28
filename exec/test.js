@@ -1,4 +1,5 @@
 var WitcoinPlatform = artifacts.require("./WitcoinPlatform.sol");
+var WitcoinSupply = artifacts.require("./WitcoinSupply.sol");
 var WitCoin = artifacts.require("./WitCoin.sol");
 
 module.exports = function(callback) {
@@ -6,19 +7,12 @@ module.exports = function(callback) {
     var coin;
 
     // Pre deployed contract
-    WitcoinPlatform.deployed().then(function(ins1) {
-        platform = ins1;
-        WitCoin.deployed().then(function(ins2) {
-            coin = ins2;
-            return coin.approve(WitcoinPlatform.address, 100 * Math.pow(10, 8));
-        }).then(function(tx) {
-            console.log("Aproved");
-            return platform.testTransfer();
-        }).then(function(tx) {
-            console.log(tx);
-        }).catch(function(e) {
-            console.log(e);
-        });
-
+    WitcoinPlatform.deployed().then(function(instance) {
+        return instance.getWitcoinSupplyAddress.call();
+    }).then(function(tx) {
+        console.log(tx);
+    }).catch(function(e) {
+        console.log(e);
     });
+
 };

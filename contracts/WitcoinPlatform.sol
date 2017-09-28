@@ -1,12 +1,14 @@
 pragma solidity 0.4.15;
 
 import "./WitCoin.sol";
-import "./WitcoinSupply.sol";
+import "./WitcoinSupplyInterface.sol";
 
 contract WitcoinPlatform {
 
+    address owner;
+
     address WitcoinAddress;
-    address SupplyAddress;
+    address SupplyAddress = 0x0;
     address WitsReceiver;
     address WitcoinClub;
 
@@ -23,10 +25,19 @@ contract WitcoinPlatform {
 
     mapping (address => wit) wits;
 
-    function WitcoinPlatform(address witcoin, address supply) {
+    function WitcoinPlatform(address witcoin) {
+        owner = msg.sender;
         WitcoinAddress = witcoin;
-        SupplyAddress = supply;
         WitsReceiver = 0xf1f42f995046E67b79DD5eBAfd224CE964740Da3;
+    }
+
+    modifier onlyOwner {
+        require(msg.sender == owner);
+        _;
+    }
+
+    function setWitcoinSupplyAddress(address a) onlyOwner {
+        SupplyAddress = a;
     }
 
     function register(address witaddress, address author, address c1, address c2, address c3, address c4, uint256 fee, uint witcoins) {
@@ -51,8 +62,9 @@ contract WitcoinPlatform {
         if (c4 != 0x0) wits[witaddress].citations.push(c4);
 
         //creació de moneda
-        WitcoinSupply supply = WitcoinSupply(SupplyAddress);
-        supply.CoinSupply();
+        if (SupplyAddress != 0x0) {
+            WitcoinSupplyInterface(SupplyAddress).CoinSupply();
+        }
     }
 
     function rewardCitations(uint256 amount, uint256 current, uint level, uint citations) returns(uint256) {

@@ -1,8 +1,9 @@
 pragma solidity 0.4.15;
 
+import "./WitcoinSupplyInterface.sol";
 import "./WitCoin.sol";
 
-contract WitcoinSupply {
+contract WitcoinSupply is WitcoinSupplyInterface {
     address WitcoinPlatform;
     address WitcoinAddress;
     address WitcoinClub;
@@ -17,7 +18,7 @@ contract WitcoinSupply {
     }
 
     modifier onlyWitcoinPlatform {
-        require(msg.sender == WitcoinAddress);
+        require(msg.sender == WitcoinPlatform);
         _;
     }
 
