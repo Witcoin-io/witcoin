@@ -6,10 +6,11 @@ contract WitcoinSupply {
     address WitcoinAddress;
     address WitcoinClub;
     uint256 t = 20;
+
     event info(string txt, uint256 value);
 
-    function WitcoinSupply(address a) {
-        WitcoinAddress = a;
+    function WitcoinSupply(address witcoin) {
+        WitcoinAddress = witcoin;
         WitcoinClub = 0xcFe984B059De5fBFd8875e4A7e7A16298721B823;
     }
 
@@ -30,7 +31,7 @@ contract WitcoinSupply {
         uint256 generatedWitcoins = (10 ** dec)/logv;
         //uint256 generatedWitcoins = 100000000; // 1 witcoin
 
-        info("generatedWitcoins", generatedWitcoins);
+        //info("generatedWitcoins", generatedWitcoins);
 
         t = t + 1;
         supply(generatedWitcoins);
@@ -75,31 +76,41 @@ contract WitcoinSupply {
         uint q4 = witcoins - q1 - q2 - q3;
 
         // Miner reward
-        address miner = block.coinbase;
-        supplyWitcoins(miner, q1);
+        supplyMiner(q1);
 
         // Community reward
-        supplyWitcoins(WitcoinClub, q2);
+        supplyCommunity(q2);
 
         // Registrars reward
-        supplyRegistrars(q3);
+        supplyRegistrar(q3);
 
         // Dividends
         supplyDividends(q4);
     }
 
     function supplyWitcoins(address to, uint256 amount) internal {
-        WitCoin coin = WitCoin(WitcoinAddress);
-        coin.mint(to, amount);
+        if (amount > 0) {
+            WitCoin coin = WitCoin(WitcoinAddress);
+            coin.mint(to, amount);
+        }
     }
 
-    function supplyRegistrars(uint256 amount) internal {
+    function supplyMiner(uint256 amount) internal {
+        address miner = block.coinbase;
+        supplyWitcoins(miner, amount);
+    }
+
+    function supplyCommunity(uint256 amount) internal {
+        supplyWitcoins(WitcoinClub, amount);
+    }
+
+    function supplyRegistrar(uint256 amount) internal {
         address registrar = msg.sender;
         supplyWitcoins(registrar, amount);
     }
 
     function supplyDividends(uint256 amount) internal {
-        address witsowner = 0xf1f42f995046E67b79DD5eBAfd224CE964740Da3;
+        address witsowner = 0xf1f42f995046E67b79DD5eBAfd224CE964740Da3; // Lottery?
         supplyWitcoins(witsowner, amount);
     }
 }
