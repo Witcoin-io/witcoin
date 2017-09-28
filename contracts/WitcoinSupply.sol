@@ -3,18 +3,20 @@ pragma solidity 0.4.15;
 import "./WitCoin.sol";
 
 contract WitcoinSupply {
+    address WitcoinPlatform;
     address WitcoinAddress;
     address WitcoinClub;
     uint256 t = 20;
     event info(string txt, uint256 value);
 
-    function WitcoinSupply(address a) {
+    function WitcoinSupply(address a, address p) {
         WitcoinAddress = a;
+        WitcoinPlatform = p;
         WitcoinClub = 0xcFe984B059De5fBFd8875e4A7e7A16298721B823;
     }
 
     modifier onlyWitcoinPlatform {
-        //require(msg.sender == WitcoinAddress);
+        require(msg.sender == WitcoinAddress);
         _;
     }
 
