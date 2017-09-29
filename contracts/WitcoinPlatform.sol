@@ -2,15 +2,19 @@ pragma solidity 0.4.15;
 
 import "./WitCoin.sol";
 import "./WitcoinSupplyInterface.sol";
+import "./WitcoinFactoryInterface.sol";
+import "./WitKnowledgeInterface.sol";
 
 contract WitcoinPlatform {
 
     address owner;
 
     address WitcoinAddress;
-    address SupplyAddress = 0x0;
     address WitsReceiver;
     address WitcoinClub;
+
+    address SupplyAddress = 0x0;
+    address FactoryAddress = 0x0;
 
     uint256 t = 10;
     uint256 MAX_DIVISIONS = 1000;
@@ -24,6 +28,8 @@ contract WitcoinPlatform {
     }
 
     mapping (address => wit) wits;
+
+    address[] witsList;
 
     function WitcoinPlatform(address witcoin) {
         owner = msg.sender;
@@ -40,7 +46,11 @@ contract WitcoinPlatform {
         SupplyAddress = a;
     }
 
-    function register(address witaddress, address author, address c1, address c2, address c3, address c4, uint256 fee, uint witcoins) {
+    function setWitcoinFactoryAddress(address a) onlyOwner {
+        FactoryAddress = a;
+    }
+
+    function register(address author, address c1, address c2, address c3, address c4, uint256 fee, uint witcoins) {
         WitCoin coin = WitCoin(WitcoinAddress);
         uint maxCitations = fee;
         uint maxLevel = witcoins;
@@ -55,17 +65,46 @@ contract WitcoinPlatform {
         rewardCitations(0.5 * (10 ** 8), 0, maxLevel, maxCitations); // 0.5 W
 
         // Si tot correcte guardo el registre.
-        wits[witaddress].reputation = 100;
-        if (c1 != 0x0) wits[witaddress].citations.push(c1);
-        if (c2 != 0x0) wits[witaddress].citations.push(c2);
-        if (c3 != 0x0) wits[witaddress].citations.push(c3);
-        if (c4 != 0x0) wits[witaddress].citations.push(c4);
+        if (FactoryAddress != 0x0) {
+            address[] memory cited = new address[](4);
+            if (c1 != 0x0) cited[0] = c1;
+            if (c2 != 0x0) cited[1] = c2;
+            if (c3 != 0x0) cited[2] = c3;
+            if (c4 != 0x0) cited[3] = c4;
+            address witAddress = WitcoinFactoryInterface(FactoryAddress).CreateWit(author, cited);
+            witsList.push(witAddress);
+        }
 
         //creació de moneda
         if (SupplyAddress != 0x0) {
             WitcoinSupplyInterface(SupplyAddress).CoinSupply();
         }
     }
+
+    function registerWit(address witaddress, uint256 fee, uint witcoins) {
+        WitCoin coin = WitCoin(WitcoinAddress);
+        address author = WitKnowledgeInterface(witaddress).getAuthorAddress();
+        uint maxCitations = fee;
+        uint maxLevel = witcoins;
+
+        // Author to contract
+        coin.transferFrom(author, address(this), 100 * (10 ** 8)); // 100 W
+
+        // Paga taxa registra al registrador.
+        coin.transfer(msg.sender, 1 * (10 ** 8)); // 1 W
+
+        // Paga el reward a les citacions.
+        rewardCitations(0.5 * (10 ** 8), 0, maxLevel, maxCitations); // 0.5 W
+
+        // Si tot correcte guardo el registre.
+        witsList.push(witaddress);
+
+        //creació de moneda
+        if (SupplyAddress != 0x0) {
+            WitcoinSupplyInterface(SupplyAddress).CoinSupply();
+        }
+    }
+
 
     function rewardCitations(uint256 amount, uint256 current, uint level, uint citations) returns(uint256) {
 
