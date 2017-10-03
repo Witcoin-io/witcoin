@@ -1,0 +1,7 @@
+Start geth:
+    geth --datadir="/home/witcoin/etherum/blockchains/rinkeby" --rinkeby --rpc --rpcapi db,eth,net,web3,personal --rpccorsdomain "http://84.88.145.199" --rpcaddr "84.88.145.249" --unlock="0x5282459151cf4f906a5ec46a8a42403e518d8edd" --password="pass.txt"
+
+Geth console (Geth MUST be running):
+    geth attach ipc://home/witcoin/etherum/blockchains/rinkeby/geth.ipc
+
+
