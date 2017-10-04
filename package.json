@@ -1,0 +1,12 @@
+{
+  "name": "Witcoin-JS",
+  "version": "1.0.0",
+  "description": "Witcoin NodeJS API",
+  "author": "Adria Llorens",
+  "license": "GPL",
+  "dependencies": {
+    "body-parser": "1.18.2",
+    "express": "4.16.0",
+    "file-system": "2.2.2"
+  }
+}

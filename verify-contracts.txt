@@ -1,0 +1,22 @@
+Install Phyton:
+    Download from: https://www.python.org/downloads/release/python-363/
+    Add INSTALLED_PHYTON_DIR into path.
+
+All the imports MUST be inide contracts folder
+
+Run (in project root):
+    python lib/solidity_flattener.py --output source.sol {CONTRACT_PATH}.sol
+
+
+In etherscan:
+    Go to Beta validator: https://rinkeby.etherscan.io/verifyContract2
+    Compiler seleccionar el que utilitza truffle. Executar "truffle version" per saber-ho. (Actualment 4.15).
+    Argument parameters abi:
+        https://npm.runkit.com/ethereumjs-abi
+        Code: (exec/abi-encoder.js)
+            var abi = require("ethereumjs-abi")
+
+            var parameterTypes = ["address"];
+            var parameterValues = ["0x337c204fa619a86b3608ae05be85d20bbaa2fc6f"];
+
+            console.log(abi.rawEncode(parameterTypes, parameterValues).toString('hex'));

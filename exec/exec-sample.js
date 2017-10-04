@@ -1,22 +1,46 @@
-var SampleContract = artifacts.require("./SampleContract.sol");
+var Utils = require("../lib//util.js");
+
+var WitcoinPlatform = artifacts.require("./WitcoinPlatform.sol");
+var WitcoinSupply = artifacts.require("./WitcoinSupply.sol");
+var WitCoin = artifacts.require("./WitCoin.sol");
 
 module.exports = function(callback) {
-    // Pre deployed contract
-    SampleContract.deployed().then(function(instance) {
-        // This runs a transaction on function sayHelloAndIncrease
-        return instance.sayHelloAndIncrease();
-    }).then(function(tx) {
-        // The returned value is a transaction. A transaction
-        console.log(tx);
 
-        // This consults de constant value of the function sayHelloAndIncrease
-        return instance.sayHelloAndIncrease.call();
-    }).then(function(result) {
-        // The returned value is the function returned value
-        console.log("Result:");
-        console.log(result);
-        return callback();
+    var promises = [];
+
+    var instances = {
+        coin: WitCoin,
+        platform: WitcoinPlatform,
+        supply: WitcoinSupply
+    };
+
+    // Deploy multiple contracts and parse its returned deployed instances
+    Utils.deployMultiple(instances).then(function (deployed) {
+        instances = Utils.parseDeployed(instances, deployed);
+
+        // All contracts deployed and saved in instances
+
+
+        promises.push(instances.coin.balanceOf.call("0xAec3aE5d2BE00bfC91597d7A1b2c43818d84396A").then(function(tx) {
+            console.log(tx);
+        }));
+
+        for (var i=0; i<100; i++) {
+            promises.push(instances.coin.transfer("0xf1f42f995046E67b79DD5eBAfd224CE964740Da3", 100000000));
+        }
+
+        promises.push(instances.coin.balanceOf.call("0xAec3aE5d2BE00bfC91597d7A1b2c43818d84396A").then(function(tx) {
+            console.log(tx);
+        }));
+
+
+        // Callback when all promises finished
+
+        Promise.all(promises).then(function(tx){
+            callback();
+        });
+    }).catch(function(e) {
+        console.log(e);
     });
-
 
 };

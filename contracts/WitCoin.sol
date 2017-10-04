@@ -1,7 +1,7 @@
 pragma solidity ^0.4.11;
 
 
-import "../examples/zeppelin-contracts/token/StandardToken.sol";
+import "./dependencies/token/StandardToken.sol";
 
 
 /**
