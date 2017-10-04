@@ -50,7 +50,7 @@ module.exports = function(callback) {
     // Pre deployed contract
     WitcoinPlatform.deployed().then(function(ins1) {
         platform = ins1;
-        var eventInfo = platform.info({txt: "txt"}, {value: "value"});
+        var eventInfo = platform.info({txt: "txt"}, {beneficiary: "beneficiary"});
         // eventInfo.watch(function(error, response) { console.log("event received: "+response.args.txt+" Value: "+response.args.value); });
         WitCoin.deployed().then(function(ins2) {
             coin = ins2;

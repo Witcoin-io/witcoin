@@ -17,7 +17,7 @@ contract WitcoinCrowdsale is Ownable {
     // address where funds are collected
     address public wallet;
 
-    // how many token units a buyer gets per wei
+    // how many token units a buyer gets per ether
     uint256 public rate;
 
     // amount of raised money in wei
@@ -41,10 +41,10 @@ contract WitcoinCrowdsale is Ownable {
     // StartTime = 1508137200 = 2017-10-16 07:00:00 GMT
     // StartPresale = 1507618800 = 2017-10-10 07:00:00 GMT
     // EndTime = 1509973200 = 2017-11-06 13:00:00 GMT
-    // Rate = 113636360000000000 wei = 0.11363636 ether = 100 witcoins (880 witcoins per 1 ether)
+    // Rate = 880 (1 ether = 880 witcoins)
     function WitcoinCrowdsale(uint256 _startTime, uint256 _startPresale, uint256 _endTime, uint256 _rate, address _wallet) {
         require(_startTime >= now);
-        require(_startPresale >= now);
+        //require(_startPresale >= now);
         require(_endTime >= _startTime);
         require(_rate > 0);
         require(_wallet != 0x0);
@@ -75,11 +75,12 @@ contract WitcoinCrowdsale is Ownable {
         uint256 weiAmount = msg.value;
 
         // calculate token amount to be created
-        uint256 tokens = weiAmount.mul(rate);
+        uint256 tokens = weiAmount.mul(rate)/1000000000000000000;
 
         // calculate bonus
         tokens = calculateBonus(tokens);
 
+        require(nonZeroPurchase(tokens));
         require(validPurchase(tokens));
 
         // update state
@@ -139,9 +140,13 @@ contract WitcoinCrowdsale is Ownable {
     // @return true if the transaction can buy tokens
     function validPurchase(uint256 tokens) internal returns (bool) {
         bool withinPeriod = presale() || sale();
-        bool nonZeroPurchase = msg.value != 0;
         bool underLimits = (presale() && tokensSold + tokens <= totalTokensPresale) || (sale() && tokensSold + tokens <= totalTokensSale);
-        return withinPeriod && nonZeroPurchase && underLimits;
+        return withinPeriod && underLimits;
+    }
+
+    function nonZeroPurchase(uint256 tokens) internal returns (bool) {
+        bool nonZeroPurchase = msg.value != 0;
+        return nonZeroPurchase;
     }
 
     function presale() public returns(bool) {
