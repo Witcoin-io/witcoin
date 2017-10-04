@@ -1,8 +1,7 @@
 pragma solidity ^0.4.11;
 
-
 import "../examples/zeppelin-contracts/token/StandardToken.sol";
-
+import "../examples/zeppelin-contracts/ownership/Ownable.sol";
 
 /**
  * @title SimpleToken
@@ -10,7 +9,7 @@ import "../examples/zeppelin-contracts/token/StandardToken.sol";
  * Note they can later distribute these tokens as they wish using `transfer` and other
  * `StandardToken` functions.
  */
-contract WitCoin is StandardToken {
+contract WitCoin is StandardToken, Ownable {
 
     string public constant name = "Witcoin";
 
@@ -19,6 +18,8 @@ contract WitCoin is StandardToken {
     uint8 public constant decimals = 8;
 
     uint256 public constant INITIAL_SUPPLY = 288000000 * (10 ** uint256(decimals));
+
+    event Mint(address indexed to, uint256 amount);
 
     /**
      * @dev Constructor that gives msg.sender all of existing tokens.
@@ -32,10 +33,11 @@ contract WitCoin is StandardToken {
         return uint256(decimals);
     }
 
-    function mint(address _to, uint256 _amount) public returns (bool) {
+    function mint(address _to, uint256 _amount) onlyOwner public returns (bool) {
         totalSupply = totalSupply.add(_amount);
         balances[_to] = balances[_to].add(_amount);
         Transfer(0x0, _to, _amount);
+        Mint(_to, _amount);
         return true;
     }
 
