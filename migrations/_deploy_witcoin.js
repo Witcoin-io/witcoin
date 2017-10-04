@@ -1,7 +1,4 @@
-var WitcoinPlatform = artifacts.require("./WitcoinPlatform.sol");
 var WitCoin = artifacts.require("./WitCoin.sol");
-var WitcoinSupply = artifacts.require("./WitcoinSupply.sol");
-var WitcoinFactory = artifacts.require("./WitcoinFactory.sol");
 var WitcoinCrowdsale = artifacts.require("./WitcoinCrowdsale.sol");
 
 module.exports = function(dd) {
