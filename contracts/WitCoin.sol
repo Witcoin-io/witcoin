@@ -1,7 +1,9 @@
 pragma solidity ^0.4.11;
 
-import "../examples/zeppelin-contracts/token/StandardToken.sol";
-import "../examples/zeppelin-contracts/ownership/Ownable.sol";
+
+import "./dependencies/token/StandardToken.sol";
+import "./dependencies/ownership/Ownable.sol";
+
 
 /**
  * @title SimpleToken

@@ -16,9 +16,6 @@ module.exports = function(callback) {
             crowdsale.sale.call().then(function(result) {
                 console.log("Sale:" + result);
             });
-            crowdsale.test.call().then(function(result) {
-                console.log("test:" + result);
-            });
 
         });
     });

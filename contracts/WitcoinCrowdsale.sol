@@ -1,6 +1,6 @@
 pragma solidity ^0.4.11;
 
-import "../examples/zeppelin-contracts/crowdsale/FinalizableCrowdsale.sol";
+import "./dependencies/crowdsale/FinalizableCrowdsale.sol";
 import './WitCoin.sol';
 
 contract WitcoinCrowdsale is Ownable {
@@ -150,9 +150,5 @@ contract WitcoinCrowdsale is Ownable {
 
     function sale() public returns(bool) {
         return now >= startTime && now <= endTime;
-    }
-
-    function test() public returns(uint256) {
-        return endTime;
     }
 }
