@@ -27,26 +27,28 @@ module.exports = function(callback) {
             var address = parts[0];
             var amount = parts[1];
             if (address.length !== 42) callback("Address length error: " + address);
+            amount = parseFloat(amount) * Math.pow(10, 8);
+            if (amount < 100 * Math.pow(10, 8)) callback("Amount less than 100.");
             donations.push({address: address, amount: amount});
         });
 
         // End read file
         rd.on('close', function() {
-            console.log("All OK, start transactions.");
+            console.log("All OK, start transactions.\n");
 
             // Make transactions
             donations.forEach(function(item){
-                instances.coin.balanceOf.call(item.address).then(function(result) {
-                    console.log("Balance: " + result);
-                });
-                instances.crowdsale.buyTokensAltercoins("0x5282459151cf4f906a5ec46a8a42403e11111111", 10000000000).then(function(tx) {
-                    console.log("Gas: " + tx.receipt.gasUsed);
-                });
-
-                // 0x5282459151cf4f906a5ec46a8a42403e11111111;10000000000
-
-                instances.coin.balanceOf.call(item.address).then(function(result) {
-                    console.log("Balance: " + result);
+                // console.log(item.address + " - " + item.amount);
+                var promises = [], before, after;
+                promises.push(instances.coin.balanceOf.call(item.address).then(function(result) {
+                    before = result;
+                }));
+                promises.push(instances.crowdsale.buyTokensAltercoins(item.address, item.amount));
+                promises.push(instances.coin.balanceOf.call(item.address).then(function(result) {
+                    after = result;
+                }));
+                Promise.all(promises).then(function(){
+                    console.log("Transferred " + (after - before) + " to " + item.address);
                 });
             });
         });
