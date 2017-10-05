@@ -43,7 +43,10 @@ module.exports = function(callback) {
             var totalWitcoinsBonus = 0;
             donations.forEach(function(item){
                 // console.log(item.address + " - " + item.amount);
-                if (!web3.isAddress([item.address])) return;
+                if (!web3.isAddress([item.address])) {
+                    console.log("Error in address " + item.address);
+                    return;
+                }
                 var before, after;
                 promises.push(instances.coin.balanceOf.call(item.address).then(function(result) {
                     before = result;
