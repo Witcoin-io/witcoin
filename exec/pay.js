@@ -23,19 +23,12 @@ module.exports = function(callback) {
 
         // Parse donations
         var donations = [];
-        var checkPromises = [];
         rd.on('line', function(line) {
             var parts = line.split(";");
             if (parts.length !== 2) callback("Error parsing line: " + line);
             var address = parts[0];
             var amount = parseFloat(parts[1]) * Math.pow(10, 8);
-
-            // Validate line params
-            if (web3.isAddress([address])) {
-                donations.push({address: address, amount: amount});
-            } else {
-                console.log("Error in address " + address);
-            }
+            donations.push({address: address, amount: amount});
         });
 
 
@@ -50,26 +43,30 @@ module.exports = function(callback) {
             var totalWitcoinsBonus = 0;
             donations.forEach(function(item){
                 // console.log(item.address + " - " + item.amount);
+                if (!web3.isAddress([item.address])) return;
                 var before, after;
                 promises.push(instances.coin.balanceOf.call(item.address).then(function(result) {
                     before = result;
-                }));
-
-                promises.push(instances.crowdsale.buyTokensAltercoins(item.address, item.amount).then(function(tx){
-                    totalWitcoins += item.amount /  Math.pow(10, 8);
+                    return instances.crowdsale.validPurchase.call(item.amount).then(function(valid){
+                        if (valid) {
+                            return instances.crowdsale.buyTokensAltercoins(item.address, item.amount).then(function(tx){
+                                totalWitcoins += item.amount /  Math.pow(10, 8);
+                                return instances.coin.balanceOf.call(item.address).then(function(result) {
+                                    after = result;
+                                    totalWitcoinsBonus += (after - before) /  Math.pow(10, 8);
+                                    if ((after - before) /  Math.pow(10, 8) !== 0) {
+                                        console.log("Minted " + (after - before) /  Math.pow(10, 8) + " to " + item.address);
+                                    }
+                                });
+                            });
+                        } else {
+                            console.log("Error in amount " + item.amount + " to " + item.address);
+                        }
+                    })
                 }).catch(function(e) {
                     // console.log(e);
-                    console.log("Error in address " + item.address);
+                    console.log("Unrecognized Error in address " + item.address);
                 }));
-
-                promises.push(instances.coin.balanceOf.call(item.address).then(function(result) {
-                    after = result;
-                    totalWitcoinsBonus += (after - before) /  Math.pow(10, 8);
-                    if ((after - before) /  Math.pow(10, 8) !== 0) {
-                        console.log("Minted " + (after - before) /  Math.pow(10, 8) + " to " + item.address);
-                    }
-                }));
-
             });
 
             // Finished all transactions
@@ -83,7 +80,7 @@ module.exports = function(callback) {
                 console.log("    Total WitCoins (bonus):        " + totalWitcoinsBonus  + " Wit");
 
                 console.log("    EUR cost (1Eth = " + EthPrice + "€):        " + Math.round(ether * EthPrice * 100) / 100 + " €");
-                console.log("    EUR received (1Wit = " + Math.round(EthPrice / 880 * 100) / 100 + "€):   " + (totalWitcoins / 880 * EthPrice)  + " €");
+                console.log("    EUR received (1Wit = " + Math.round(EthPrice / 880 * 100) / 100 + "€):   " + (Math.round(totalWitcoins / 880 * EthPrice * 100) / 100)  + " €");
             });
 
         });
