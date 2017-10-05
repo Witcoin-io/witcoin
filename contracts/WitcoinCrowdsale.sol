@@ -42,25 +42,14 @@ contract WitcoinCrowdsale is Ownable {
     // StartPresale = 1507618800 = 2017-10-10 07:00:00 GMT
     // EndTime = 1509973200 = 2017-11-06 13:00:00 GMT
     // Rate = 880 (1 ether = 880 witcoins)
-    function WitcoinCrowdsale(uint256 _startTime, uint256 _startPresale, uint256 _endTime, uint256 _rate, address _wallet) {
-        require(_startTime >= now);
-        //require(_startPresale >= now);
-        require(_endTime >= _startTime);
-        require(_rate > 0);
-        require(_wallet != 0x0);
-
-        token = createTokenContract();
-        startTime = _startTime;
-        startPresale = _startPresale;
-        endTime = _endTime;
-        rate = _rate;
-        wallet = _wallet;
-    }
-
-    // creates the token to be sold.
-    // override this method to have crowdsale of a specific mintable token.
-    function createTokenContract() internal returns (WitCoin) {
-        return new WitCoin();
+    function WitcoinCrowdsale(address witAddress) {
+        token = WitCoin(witAddress);
+        startTime = 1508137200;
+        //startPresale = 1507618800;
+        startPresale = 1504512776;
+        endTime = 1509973200;
+        rate = 880;
+        wallet = 0xf1f42f995046E67b79DD5eBAfd224CE964740Da3;
     }
 
     // fallback function can be used to buy tokens

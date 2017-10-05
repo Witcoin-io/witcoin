@@ -14,7 +14,7 @@ module.exports = {
             from: "0xDbdaA17aa6a854fEE1E127e1917E0a98dad607d7", // default address to use for any
             network_id: 4, // Network ID
             gas: 4612388, // Gas limit used for deploys
-            gasPrice: 5000000000 // 5 GWei
+            gasPrice: 6000000000 // 5 GWei
         },
         test: {
             host: "84.88.145.249", // Connect to geth on the specified ip
@@ -22,7 +22,7 @@ module.exports = {
             from: "0x5282459151cf4f906a5ec46a8a42403e518d8edd", // default address to use for any
             network_id: "*", // Network ID
             gas: 4612388, // Gas limit used for deploys
-            gasPrice: 5000000000 // 5 GWei
+            gasPrice: 6000000000 // 5 GWei
         }
     }
 };

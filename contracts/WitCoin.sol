@@ -13,6 +13,14 @@ import "./dependencies/ownership/Ownable.sol";
  */
 contract WitCoin is StandardToken, Ownable {
 
+    /*
+     * External contracts
+     */
+    address public minter;
+
+    /*
+     * Token meta data
+     */
     string public constant name = "Witcoin";
 
     string public constant symbol = "WIT";
@@ -22,6 +30,14 @@ contract WitCoin is StandardToken, Ownable {
     uint256 public constant INITIAL_SUPPLY = 288000000 * (10 ** uint256(decimals));
 
     event Mint(address indexed to, uint256 amount);
+
+    modifier onlyMinter() {
+        // Only minter is allowed to proceed.
+        if (msg.sender != minter) {
+            throw;
+        }
+        _;
+    }
 
     /**
      * @dev Constructor that gives msg.sender all of existing tokens.
@@ -35,12 +51,17 @@ contract WitCoin is StandardToken, Ownable {
         return uint256(decimals);
     }
 
-    function mint(address _to, uint256 _amount) onlyOwner public returns (bool) {
+    function mint(address _to, uint256 _amount) onlyMinter public returns (bool) {
         totalSupply = totalSupply.add(_amount);
         balances[_to] = balances[_to].add(_amount);
         Transfer(0x0, _to, _amount);
         Mint(_to, _amount);
         return true;
+    }
+
+    function changeMinter(address newAddress) public onlyOwner returns (bool)
+    {
+        minter = newAddress;
     }
 
     function transferCheaper(address _from, address _to, uint256 _value)public returns (bool) {

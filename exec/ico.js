@@ -50,6 +50,7 @@ module.exports = function(callback) {
             crowdsale.send(EtherToWei(2000)).then(function(result) {
                 console.log("Bought tokens through ether transfer");
                 console.log("Gas consumed: " + result.receipt.gasUsed);
+                //console.log(result.logs);
             }).catch(function(e) {
                 if (e.message.indexOf("sender doesn't have enough funds") > -1) console.log("Sender doesn't have enough funds");
                 else console.log(e);
@@ -62,6 +63,7 @@ module.exports = function(callback) {
             crowdsale.buyTokensAltercoins(0xAec3aE5d2BE00bfC91597d7A1b2c43818d84396A, 10).then(function(result) {
                 console.log("Bought tokens with altercoins");
                 console.log("Gas consumed: " + result.receipt.gasUsed);
+                //console.log(result.logs);
             });
             crowdsale.tokensSold.call().then(function(result) {
                 console.log("Tokens Sold: " + result);
@@ -70,6 +72,7 @@ module.exports = function(callback) {
             crowdsale.buyTokensAltercoins(0xAec3aE5d2BE00bfC91597d7A1b2c43818d84396A, 50).then(function(result) {
                 console.log("Bought tokens with altercoins");
                 console.log("Gas consumed: " + result.receipt.gasUsed);
+                //console.log(result.logs);
             });
 
             crowdsale.tokensSold.call().then(function(result) {
