@@ -135,7 +135,7 @@ contract WitcoinCrowdsale is Ownable {
     }
 
     // @return true if the transaction can buy tokens
-    function validPurchase(uint256 tokens) internal returns (bool) {
+    function validPurchase(uint256 tokens) returns (bool) {
         bool withinPeriod = presale() || sale();
         bool underLimits = (presale() && tokensSold + tokens <= totalTokensPresale) || (sale() && tokensSold + tokens <= totalTokensSale);
         bool overMinimum = tokens >= minimumWitcoins;
