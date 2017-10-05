@@ -26,8 +26,10 @@ contract WitcoinCrowdsale is Ownable {
     // amount of tokens sold
     uint256 public tokensSold;
 
-    uint256 public totalTokensPresale = 1000000;
-    uint256 public totalTokensSale = 8000000;
+    uint256 public decimals;
+    uint256 public totalTokensPresale;
+    uint256 public totalTokensSale;
+    uint256 public minimumWitcoins;
 
     /**
      * event for token purchase logging
@@ -44,12 +46,17 @@ contract WitcoinCrowdsale is Ownable {
     // Rate = 880 (1 ether = 880 witcoins)
     function WitcoinCrowdsale(address witAddress) {
         token = WitCoin(witAddress);
+        decimals = token.getDecimals();
         startTime = 1508137200;
         //startPresale = 1507618800;
         startPresale = 1504512776;
         endTime = 1509973200;
         rate = 880;
         wallet = 0xf1f42f995046E67b79DD5eBAfd224CE964740Da3;
+
+        totalTokensPresale = 1000000 * (10 ** decimals);
+        totalTokensSale = 8000000 * (10 ** decimals);
+        minimumWitcoins = 100 * (10 ** decimals);
     }
 
     // fallback function can be used to buy tokens
@@ -65,12 +72,13 @@ contract WitcoinCrowdsale is Ownable {
 
         // calculate token amount to be created
         uint256 tokens = weiAmount.mul(rate)/1000000000000000000;
+        tokens = tokens * (10 ** decimals);
 
         // calculate bonus
         tokens = calculateBonus(tokens);
 
         require(nonZeroPurchase(tokens));
-        require(validPurchase(tokens));
+        //require(validPurchase(tokens));
 
         // update state
         weiRaised = weiRaised.add(weiAmount);
@@ -108,18 +116,18 @@ contract WitcoinCrowdsale is Ownable {
 
         // Pre-Sale Bonus
         if (presale()) {
-            if (tokensSold <= 250000) bonusedTokens = bonusedTokens.mul(130)/100;
-            else if (tokensSold <= 500000) bonusedTokens = bonusedTokens.mul(125)/100;
-            else if (tokensSold <= 750000) bonusedTokens = bonusedTokens.mul(120)/100;
-            else if (tokensSold <= 1000000) bonusedTokens = bonusedTokens.mul(115)/100;
+            if (tokensSold <= 250000 * (10 ** decimals)) bonusedTokens = bonusedTokens.mul(130)/100;
+            else if (tokensSold <= 500000 * (10 ** decimals)) bonusedTokens = bonusedTokens.mul(125)/100;
+            else if (tokensSold <= 750000 * (10 ** decimals)) bonusedTokens = bonusedTokens.mul(120)/100;
+            else if (tokensSold <= 1000000 * (10 ** decimals)) bonusedTokens = bonusedTokens.mul(115)/100;
         }
 
         // Sale Bonus
         if (sale()) {
-            if (bonusedTokens > 2500) {
-                if (bonusedTokens <= 80000) bonusedTokens = bonusedTokens.mul(105)/100;
-                else if (bonusedTokens <= 800000) bonusedTokens = bonusedTokens.mul(110)/100;
-                else if (bonusedTokens > 800000) bonusedTokens = bonusedTokens.mul(120)/100;
+            if (bonusedTokens > 2500 * (10 ** decimals)) {
+                if (bonusedTokens <= 80000 * (10 ** decimals)) bonusedTokens = bonusedTokens.mul(105)/100;
+                else if (bonusedTokens <= 800000 * (10 ** decimals)) bonusedTokens = bonusedTokens.mul(110)/100;
+                else if (bonusedTokens > 800000 * (10 ** decimals)) bonusedTokens = bonusedTokens.mul(120)/100;
             }
         }
 
@@ -130,7 +138,8 @@ contract WitcoinCrowdsale is Ownable {
     function validPurchase(uint256 tokens) internal returns (bool) {
         bool withinPeriod = presale() || sale();
         bool underLimits = (presale() && tokensSold + tokens <= totalTokensPresale) || (sale() && tokensSold + tokens <= totalTokensSale);
-        return withinPeriod && underLimits;
+        bool overMinimum = tokens >= minimumWitcoins;
+        return withinPeriod && underLimits && overMinimum;
     }
 
     function nonZeroPurchase(uint256 tokens) internal returns (bool) {

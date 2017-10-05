@@ -60,7 +60,7 @@ module.exports = function(callback) {
                 console.log("Tokens Sold: " + result);
             });
 
-            crowdsale.buyTokensAltercoins(0xAec3aE5d2BE00bfC91597d7A1b2c43818d84396A, 10).then(function(result) {
+            crowdsale.buyTokensAltercoins(0xAec3aE5d2BE00bfC91597d7A1b2c43818d84396A, 10000000000).then(function(result) {
                 console.log("Bought tokens with altercoins");
                 console.log("Gas consumed: " + result.receipt.gasUsed);
                 //console.log(result.logs);
@@ -69,10 +69,22 @@ module.exports = function(callback) {
                 console.log("Tokens Sold: " + result);
             });
 
-            crowdsale.buyTokensAltercoins(0xAec3aE5d2BE00bfC91597d7A1b2c43818d84396A, 50).then(function(result) {
+            crowdsale.buyTokensAltercoins(0xAec3aE5d2BE00bfC91597d7A1b2c43818d84396A, 5000000000).then(function(result) {
                 console.log("Bought tokens with altercoins");
                 console.log("Gas consumed: " + result.receipt.gasUsed);
                 //console.log(result.logs);
+            }).catch(function(e) {
+                if (e.message.indexOf("invalid opcode") > -1) console.log("Not a valid purchase");
+                else console.log(e);
+            });
+
+            crowdsale.buyTokensAltercoins(0xAec3aE5d2BE00bfC91597d7A1b2c43818d84396A, 10000000000000).then(function(result) {
+                console.log("Bought tokens with altercoins");
+                console.log("Gas consumed: " + result.receipt.gasUsed);
+                //console.log(result.logs);
+            }).catch(function(e) {
+                if (e.message.indexOf("invalid opcode") > -1) console.log("Not a valid purchase");
+                else console.log(e);
             });
 
             crowdsale.tokensSold.call().then(function(result) {
