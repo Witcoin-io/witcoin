@@ -2,3 +2,4 @@
 .idea/
 build/
 estimations.txt
+node_modules/

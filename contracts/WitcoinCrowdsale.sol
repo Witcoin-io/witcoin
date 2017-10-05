@@ -17,7 +17,7 @@ contract WitcoinCrowdsale is Ownable {
     // address where funds are collected
     address public wallet;
 
-    // how many token units a buyer gets per wei
+    // how many token units a buyer gets per ether
     uint256 public rate;
 
     // amount of raised money in wei
@@ -41,13 +41,14 @@ contract WitcoinCrowdsale is Ownable {
     // StartTime = 1508137200 = 2017-10-16 07:00:00 GMT
     // StartPresale = 1507618800 = 2017-10-10 07:00:00 GMT
     // EndTime = 1509973200 = 2017-11-06 13:00:00 GMT
-    // Rate = 113636360000000000 wei = 0.11363636 ether = 100 witcoins (880 witcoins per 1 ether)
+    // Rate = 880 (1 ether = 880 witcoins)
     function WitcoinCrowdsale(address witAddress) {
         token = WitCoin(witAddress);
         startTime = 1508137200;
-        startPresale = 1507618800;
+        //startPresale = 1507618800;
+        startPresale = 1504512776;
         endTime = 1509973200;
-        rate = 113636360000000000;
+        rate = 880;
         wallet = 0xf1f42f995046E67b79DD5eBAfd224CE964740Da3;
     }
 
@@ -63,11 +64,12 @@ contract WitcoinCrowdsale is Ownable {
         uint256 weiAmount = msg.value;
 
         // calculate token amount to be created
-        uint256 tokens = weiAmount.mul(rate);
+        uint256 tokens = weiAmount.mul(rate)/1000000000000000000;
 
         // calculate bonus
         tokens = calculateBonus(tokens);
 
+        require(nonZeroPurchase(tokens));
         require(validPurchase(tokens));
 
         // update state
@@ -127,9 +129,13 @@ contract WitcoinCrowdsale is Ownable {
     // @return true if the transaction can buy tokens
     function validPurchase(uint256 tokens) internal returns (bool) {
         bool withinPeriod = presale() || sale();
-        bool nonZeroPurchase = msg.value != 0;
         bool underLimits = (presale() && tokensSold + tokens <= totalTokensPresale) || (sale() && tokensSold + tokens <= totalTokensSale);
-        return withinPeriod && nonZeroPurchase && underLimits;
+        return withinPeriod && underLimits;
+    }
+
+    function nonZeroPurchase(uint256 tokens) internal returns (bool) {
+        bool nonZeroPurchase = msg.value != 0;
+        return nonZeroPurchase;
     }
 
     function presale() public returns(bool) {
