@@ -117,7 +117,7 @@ module.exports = function(callback) {
             });
 
             printTokensSold();
-            Buy(2000);
+            Buy(3000);
             DistributeTokens();
 
             // Finally
