@@ -42,16 +42,16 @@ function Buy(ether) {
     printTokensSold();
 }
 
-function Buy(ether,account) {
-    promises.push(crowdsale.send(EtherToWei(ether), {from: account}).then(function(result) {
-        console.log("Buying tokens through ether transfer");
-        console.log("Gas consumed: " + result.receipt.gasUsed);
-    }).catch(function(e) {
-        if (e.message.indexOf("sender doesn't have enough funds") > -1) console.log("Sender doesn't have enough funds");
-        else console.log(e);
-    }));
-    printTokensSold();
-}
+// function Buy(ether,account) {
+//     promises.push(crowdsale.send(EtherToWei(ether), {from: account}).then(function(result) {
+//         console.log("Buying tokens through ether transfer");
+//         console.log("Gas consumed: " + result.receipt.gasUsed);
+//     }).catch(function(e) {
+//         if (e.message.indexOf("sender doesn't have enough funds") > -1) console.log("Sender doesn't have enough funds");
+//         else console.log(e);
+//     }));
+//     printTokensSold();
+// }
 
 function BuyAlterCoin(address, witcoins) {
     promises.push(crowdsale.buyTokensAltercoins(address, WitcoinsToDecimals(witcoins)).then(function(result) {
@@ -92,6 +92,16 @@ function printBalance(account) {
     })
 }
 
+function DistributeTokens() {
+    promises.push(crowdsale.distributeTokens().then(function(result) {
+        console.log("Distributed tokens");
+        console.log("Gas consumed: " + result.receipt.gasUsed);
+    }).catch(function(e) {
+        if (e.message.indexOf("sender doesn't have enough funds") > -1) console.log("Sender doesn't have enough funds");
+        else console.log(e);
+    }));
+}
+
 module.exports = function(callback) {
     var eventCall;
 
@@ -106,66 +116,9 @@ module.exports = function(callback) {
                 console.log("Event: [Invested: "+response.args.value+", Tokens: "+response.args.amount + "]");
             });
 
-            /*var accounts;
-            web3.eth.getAccounts(function(err,res) { accounts = res; });
-            console.log(accounts);
-            var account1 = accounts[0];
-            var account2 = accounts[1];
-            var account3 = accounts[2];*/
-
-            printBalance(address1);
-            printBalance(address2);
-            printBalance(address3);
-            printBalance(real_address);
-
-            promises.push(crowdsale.presale.call().then(function(result) {
-                console.log("Presale time? " + result);
-            }));
-            promises.push(crowdsale.sale.call().then(function(result) {
-                console.log("Sale time? " + result);
-            }));
-            promises.push(crowdsale.finalized.call().then(function(result) {
-                console.log("Finalized? " + result);
-            }));
             printTokensSold();
-
-            // Buy 1 ether = 880 witcoins (+bonus)
-            Buy(1);
-
-            // Buy 2 ethers = 880*2 witcoins (+bonus)
-            Buy(2);
-
-            //Buy(2, address2);
-
-            // Buy from altercoins 100 witcoins
-            BuyAlterCoin(address1, 100);
-
-            // Buy 2000 ether -> not enough funds in wallet
-            Buy(2000);
-
-            // Buy from altercoins 50 witcoins -> error because the minimum is 100
-            BuyAlterCoin(address1, 50);
-
-            // Buy from altercoins 100000 witcoins -> error because overpasses the crowdsale witcoins limit
-            BuyAlterCoin(address1, 1000000);
-
-            // Buy from altercoins 100 witcoins -> error because invalid address
-            BuyAlterCoin(address1, 0);
-
-            // Finalize crowdsale
-            Finalize();
-
-            promises.push(crowdsale.finalized.call().then(function(result) {
-                console.log("Finalized? " + result);
-            }));
-
-            // Claim refund -> not possible because crowdsale has not finished
-            ClaimRefund();
-
-            printBalance(address1);
-            printBalance(address2);
-            printBalance(address3);
-            printBalance(real_address);
+            Buy(3000);
+            DistributeTokens();
 
             // Finally
             Promise.all(promises).then(function(){
