@@ -1,10 +1,10 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.15;
 
 import "../dependencies/ownership/Ownable.sol";
 import "./ERC223Token.sol";
 import "./KnowledgeTokenInterface.sol";
 
-contract KnowledgeToken is KnowledgeTokenInterface ,Ownable,ERC223Token {
+contract KnowledgeToken is KnowledgeTokenInterface, Ownable, ERC223Token {
 
     address public minter;
     mapping(address => uint) balances;
@@ -12,7 +12,7 @@ contract KnowledgeToken is KnowledgeTokenInterface ,Ownable,ERC223Token {
 
     modifier onlyMinter() {
         // Only minter is allowed to proceed.
-        assert (msg.sender != minter);
+        require (msg.sender == minter);
         _;
     }
 

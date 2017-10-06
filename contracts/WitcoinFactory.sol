@@ -48,7 +48,6 @@ contract WitKnowledge is WitKnowledgeInterface {
     function WitKnowledge(address a, address[] c){
         author = a;
         citations = c;
-        reputation = 0;
     }
 
     function withdrawWitcoins() onlyAuthor {

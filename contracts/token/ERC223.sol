@@ -1,6 +1,5 @@
 pragma solidity ^0.4.11;
 
-
 import './ERC20.sol';
 
 /**
@@ -10,8 +9,6 @@ import './ERC20.sol';
  */
 
 contract ERC223 is ERC20 {
-
-
 
     function name() constant returns (string _name);
     function symbol() constant returns (string _symbol);
