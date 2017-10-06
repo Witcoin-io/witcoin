@@ -135,7 +135,7 @@ module.exports = function(callback) {
             // Buy 2 ethers = 880*2 witcoins (+bonus)
             Buy(2);
 
-            //Buy(2, account2);
+            //Buy(2, address2);
 
             // Buy from altercoins 100 witcoins
             BuyAlterCoin(address1, 100);

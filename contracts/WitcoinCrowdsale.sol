@@ -1,6 +1,5 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.4.15;
 
-import "./dependencies/crowdsale/FinalizableCrowdsale.sol";
 import './dependencies/crowdsale/RefundVault.sol';
 import './WitCoin.sol';
 
@@ -65,6 +64,7 @@ contract WitcoinCrowdsale is Ownable {
 //        startPresale = 1507618800; // 1507618800 = 2017-10-10 07:00:00 GMT
         startPresale = 1504512776; // 2017-09-04
         endTime = 1509973200; // 2017-11-06 13:00:00 GMT
+        //endTime = 1507191176; // 2017-10-05
         rate = 880; // 1 ether = 880 witcoins
         wallet = receiver;
         goal = 1000000 * (10 ** decimals); // 1M witcoins
@@ -125,8 +125,7 @@ contract WitcoinCrowdsale is Ownable {
 
     // send the ether to the fund collection wallet
     function forwardFunds() internal {
-        wallet.transfer(msg.value);
-        //vault.deposit.value(msg.value)(msg.sender);
+        vault.deposit.value(msg.value)(msg.sender);
     }
 
     // number of tokens issued after applying presale and sale bonuses
@@ -203,7 +202,7 @@ contract WitcoinCrowdsale is Ownable {
 
         uint256 toDistribute = tokensSold - tokensDistributed;
 
-        // As writted in witcoin.io
+        // As written in witcoin.io
         // 1% bounties
         // 5% nir-vana platform
         // 10% Team
