@@ -1,6 +1,6 @@
 pragma solidity ^0.4.15;
 
-import "./WitCoin.sol";
+import "./token/WitCoin.sol";
 import "./WitcoinSupplyInterface.sol";
 import "./WitKnowledgeInterface.sol";
 
@@ -48,7 +48,6 @@ contract WitKnowledge is WitKnowledgeInterface {
     function WitKnowledge(address a, address[] c){
         author = a;
         citations = c;
-//        reputation = 0;
     }
 
     function withdrawWitcoins() onlyAuthor {
