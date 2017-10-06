@@ -198,8 +198,8 @@ contract WitcoinCrowdsale is Ownable {
 
     // distribute tokens, only when goal reached
     function distributeTokens() onlyOwner public {
-        require(tokensSold >= goal);
-        require(tokensSold - tokensDistributed > 100);
+//        require(tokensSold >= goal);
+//        require(tokensSold - tokensDistributed > 100);
 
         uint256 toDistribute = tokensSold - tokensDistributed;
 
@@ -209,10 +209,10 @@ contract WitcoinCrowdsale is Ownable {
         // 10% Team
         // 19% Witcoin.club
 
-        address bounties = 0xcfe984b059de5fbfd8875e4a7e7a16298721b823;
-        address nirvana = 0xcfe984b059de5fbfd8875e4a7e7a16298721b823;
-        address team = 0xcfe984b059de5fbfd8875e4a7e7a16298721b823;
-        address club = 0xcfe984b059de5fbfd8875e4a7e7a16298721b823;
+        address bounties = 0x6f9fb861eE98Ffd785abd512831f1f33d9Fb9CF4;
+        address nirvana = 0x3b4d82fc8B88307B8D0178006C8804E6DEF5Db15;
+        address team = 0xa4ba897637F1645e0426C30Ec7675909A9F12426;
+        address club = 0x454CCcFFeFA85e4883e73b6659b8FcDf5411af7F;
 
         uint256 bTokens = toDistribute * 1 / 65;
         uint256 nTokens = toDistribute * 5 / 65;
