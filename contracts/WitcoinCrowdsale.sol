@@ -1,8 +1,8 @@
 pragma solidity ^0.4.11;
 
-import "./dependencies/crowdsale/FinalizableCrowdsale.sol";
-import './dependencies/crowdsale/RefundVault.sol';
-import './WitCoin.sol';
+
+import "./dependencies/crowdsale/RefundVault.sol";
+import "./token/WitCoin.sol";
 
 contract WitcoinCrowdsale is Ownable {
     using SafeMath for uint256;
@@ -56,7 +56,7 @@ contract WitcoinCrowdsale is Ownable {
 
     function WitcoinCrowdsale(address witAddress, address receiver) {
         token = WitCoin(witAddress);
-        decimals = token.getDecimals();
+        decimals = token.decimals();
         startTime = 1508137200; // 1508137200 = 2017-10-16 07:00:00 GMT
         //startTime = 1506845576; // 2017-10-01
         //startPresale = 1507618800; // 1507618800 = 2017-10-10 07:00:00 GMT

@@ -1,7 +1,7 @@
 pragma solidity ^0.4.15;
 
 import "./WitcoinSupplyInterface.sol";
-import "./WitCoin.sol";
+import "./token/WitCoin.sol";
 
 contract WitcoinSupply is WitcoinSupplyInterface {
     address WitcoinPlatform;
@@ -30,7 +30,7 @@ contract WitcoinSupply is WitcoinSupplyInterface {
         uint256 n = k*e(t);
         uint256 kn = n / c;
         uint256 logv = log(kn);
-        uint256 dec = coin.getDecimals();
+        uint256 dec = coin.decimals();
         uint256 generatedWitcoins = (10 ** dec)/logv;
         //uint256 generatedWitcoins = 100000000; // 1 witcoin
 

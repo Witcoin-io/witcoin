@@ -2,14 +2,14 @@ pragma solidity ^0.4.11;
 
 
 import './ERC20Basic.sol';
-import '../math/SafeMath.sol';
+import '../dependencies/math/SafeMath.sol';
 
 
 /**
  * @title Basic token
  * @dev Basic version of StandardToken, with no allowances.
  */
-contract BasicToken is ERC20Basic {
+contract ERC20BasicToken is ERC20Basic {
   using SafeMath for uint256;
 
   mapping(address => uint256) balances;
