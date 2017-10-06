@@ -1,6 +1,5 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.4.15;
 
-import "./dependencies/crowdsale/FinalizableCrowdsale.sol";
 import './dependencies/crowdsale/RefundVault.sol';
 import './WitCoin.sol';
 
@@ -121,8 +120,8 @@ contract WitcoinCrowdsale is Ownable {
 
     // send the ether to the fund collection wallet
     function forwardFunds() internal {
-        wallet.transfer(msg.value);
-        //vault.deposit.value(msg.value)(msg.sender);
+        //wallet.transfer(msg.value);
+        vault.deposit.value(msg.value)(msg.sender);
     }
 
     // number of tokens issued after applying presale and sale bonuses
