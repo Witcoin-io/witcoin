@@ -195,23 +195,22 @@ contract WitcoinCrowdsale is Ownable {
         vault.refund(msg.sender);
     }
 
-    // distribute tokens, only when goal reached
+    // Distribute tokens, only when goal reached
+    // As written in https://witcoin.io:
+    //   1%  bounties
+    //   5%  nir-vana platform
+    //   10% Team
+    //   19% Witcoin.club
     function distributeTokens() onlyOwner public {
-//        require(tokensSold >= goal);
-//        require(tokensSold - tokensDistributed > 100);
+        require(tokensSold >= goal);
+        require(tokensSold - tokensDistributed > 100);
 
         uint256 toDistribute = tokensSold - tokensDistributed;
 
-        // As written in witcoin.io
-        // 1% bounties
-        // 5% nir-vana platform
-        // 10% Team
-        // 19% Witcoin.club
-
-        address bounties = 0x6f9fb861eE98Ffd785abd512831f1f33d9Fb9CF4;
-        address nirvana = 0x3b4d82fc8B88307B8D0178006C8804E6DEF5Db15;
-        address team = 0xa4ba897637F1645e0426C30Ec7675909A9F12426;
-        address club = 0x454CCcFFeFA85e4883e73b6659b8FcDf5411af7F;
+        address bounties = 0x057Afd5422524d5Ca20218d07048300832323360;
+        address nirvana = 0x094d57AdaBa2278de6D1f3e2F975f14248C3775F;
+        address team = 0x7eC9d37163F4F1D1fD7E92B79B73d910088Aa2e7;
+        address club = 0xb2c032aF1336A1482eB2FE1815Ef301A2ea4fE0A;
 
         uint256 bTokens = toDistribute * 1 / 65;
         uint256 nTokens = toDistribute * 5 / 65;

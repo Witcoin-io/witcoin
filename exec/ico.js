@@ -35,34 +35,39 @@ function Buy(ether) {
     promises.push(crowdsale.send(EtherToWei(ether)).then(function(result) {
         console.log("Buying tokens through ether transfer");
         console.log("Gas consumed: " + result.receipt.gasUsed);
+        return crowdsale.tokensSold.call().then(function(result) {
+            console.log("Tokens Sold: " + DecimalsToWitcoins(result));
+        });
     }).catch(function(e) {
         if (e.message.indexOf("sender doesn't have enough funds") > -1) console.log("Sender doesn't have enough funds");
         else console.log(e);
     }));
-    printTokensSold();
 }
 
 function Buy(ether,account) {
     promises.push(crowdsale.send(EtherToWei(ether), {from: account}).then(function(result) {
         console.log("Buying tokens through ether transfer");
         console.log("Gas consumed: " + result.receipt.gasUsed);
+        return crowdsale.tokensSold.call().then(function(result) {
+            console.log("Tokens Sold: " + DecimalsToWitcoins(result));
+        });
     }).catch(function(e) {
         if (e.message.indexOf("sender doesn't have enough funds") > -1) console.log("Sender doesn't have enough funds");
         else console.log(e);
     }));
-    printTokensSold();
 }
 
 function BuyAlterCoin(address, witcoins) {
     promises.push(crowdsale.buyTokensAltercoins(address, WitcoinsToDecimals(witcoins)).then(function(result) {
         console.log("Buying "+witcoins+" tokens with altercoins");
         console.log("Gas consumed: " + result.receipt.gasUsed);
-        //console.log(result.logs);
+        return crowdsale.tokensSold.call().then(function(result) {
+            console.log("Tokens Sold: " + DecimalsToWitcoins(result));
+        });
     }).catch(function(e) {
         if (e.message.indexOf("invalid opcode") > -1) console.log("Not a valid purchase");
         else console.log(e);
     }));
-    printTokensSold();
 }
 
 function ClaimRefund() {
