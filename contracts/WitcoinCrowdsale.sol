@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.11;
 
 import "./dependencies/crowdsale/FinalizableCrowdsale.sol";
 import './dependencies/crowdsale/RefundVault.sol';
