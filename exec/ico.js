@@ -1,5 +1,5 @@
-var WitCoin = artifacts.require("./WitCoin.sol");
-var CrowdSale = artifacts.require("./WitcoinCrowdsale.sol");
+var WitCoin = artifacts.require("./token/WitCoin.sol");
+var CrowdSale = artifacts.require("./crowdsale/WitcoinCrowdsale.sol");
 var crowdsale;
 var coin;
 var promises = [];

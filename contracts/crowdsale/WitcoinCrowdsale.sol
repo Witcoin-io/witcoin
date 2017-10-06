@@ -1,8 +1,8 @@
 pragma solidity ^0.4.15;
 
 
-import "./dependencies/crowdsale/RefundVault.sol";
-import "./token/WitCoin.sol";
+import "./RefundVault.sol";
+import "../token/WitCoin.sol";
 
 contract WitcoinCrowdsale is Ownable {
     using SafeMath for uint256;

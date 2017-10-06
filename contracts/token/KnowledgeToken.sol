@@ -1,6 +1,6 @@
 pragma solidity ^0.4.15;
 
-import "../dependencies/ownership/Ownable.sol";
+import "../util/Ownable.sol";
 import "./ERC223Token.sol";
 import "./KnowledgeTokenInterface.sol";
 

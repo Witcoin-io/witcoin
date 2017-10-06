@@ -1,8 +1,8 @@
 pragma solidity ^0.4.15;
 
-import "./token/WitCoin.sol";
-import "./WitcoinSupplyInterface.sol";
-import "./WitKnowledgeInterface.sol";
+import "../token/WitCoin.sol";
+import "./interfaces/WitcoinSupplyInterface.sol";
+import "./interfaces/WitKnowledgeInterface.sol";
 
 contract WitcoinFactory {
 
