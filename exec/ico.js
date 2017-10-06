@@ -174,6 +174,14 @@ module.exports = function(callback) {
 
             // Finally
             Promise.all(promises).then(function(){
+                coin.balanceOf.call(address1).then(function(result) {
+                    console.log("Balance " + result);
+                });
+
+                coin.totalSupply.call().then(function(result) {
+                    console.log("Total " + result);
+                });
+
                 eventCall.stopWatching();
             })
         });
