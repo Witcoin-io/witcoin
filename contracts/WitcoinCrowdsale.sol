@@ -1,6 +1,7 @@
 pragma solidity ^0.4.11;
 
 import "./dependencies/crowdsale/FinalizableCrowdsale.sol";
+import './dependencies/crowdsale/RefundVault.sol';
 import './WitCoin.sol';
 
 contract WitcoinCrowdsale is Ownable {
@@ -8,6 +9,12 @@ contract WitcoinCrowdsale is Ownable {
 
     // The token being sold
     WitCoin public token;
+
+    // refund vault used to hold funds while crowdsale is running
+    RefundVault public vault;
+
+    // minimum amount of tokens to be issued
+    uint256 public goal;
 
     // start and end timestamps where investments are allowed (both inclusive)
     uint256 public startTime;
@@ -26,9 +33,16 @@ contract WitcoinCrowdsale is Ownable {
     // amount of tokens sold
     uint256 public tokensSold;
 
+    // token decimals
     uint256 public decimals;
+
+    // total of tokens sold in the presale time
     uint256 public totalTokensPresale;
+
+    // total of tokens sold in the sale time (includes presale)
     uint256 public totalTokensSale;
+
+    // minimum amount of witcoins bought
     uint256 public minimumWitcoins;
 
     /**
@@ -40,31 +54,31 @@ contract WitcoinCrowdsale is Ownable {
      */
     event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
 
-    // StartTime = 1508137200 = 2017-10-16 07:00:00 GMT
-    // StartPresale = 1507618800 = 2017-10-10 07:00:00 GMT
-    // EndTime = 1509973200 = 2017-11-06 13:00:00 GMT
-    // Rate = 880 (1 ether = 880 witcoins)
-    function WitcoinCrowdsale(address witAddress) {
+    function WitcoinCrowdsale(address witAddress, address receiver) {
         token = WitCoin(witAddress);
         decimals = token.getDecimals();
-        startTime = 1508137200;
-        //startPresale = 1507618800;
-        startPresale = 1504512776;
-        endTime = 1509973200;
-        rate = 880;
-        wallet = 0xf1f42f995046E67b79DD5eBAfd224CE964740Da3;
+        startTime = 1508137200; // 1508137200 = 2017-10-16 07:00:00 GMT
+        //startTime = 1506845576; // 2017-10-01
+        //startPresale = 1507618800; // 1507618800 = 2017-10-10 07:00:00 GMT
+        startPresale = 1504512776; // 2017-09-04
+        endTime = 1509973200; // 2017-11-06 13:00:00 GMT
+        rate = 880; // 1 ether = 880 witcoins
+        wallet = receiver;
+        goal = 1000000 * (10 ** decimals); // 1M witcoins
 
-        totalTokensPresale = 1000000 * (10 ** decimals);
-        totalTokensSale = 8000000 * (10 ** decimals);
-        minimumWitcoins = 100 * (10 ** decimals);
+        totalTokensPresale = 1000000 * (10 ** decimals) * 65 / 100; // 65% of 1M witcoins
+        totalTokensSale = 8000000 * (10 ** decimals) * 65 / 100; // 65% of 8M witcoins
+        minimumWitcoins = 100 * (10 ** decimals); // 100 witcoins
+
+        vault = new RefundVault(wallet);
     }
 
-    // fallback function can be used to buy tokens
+    // fallback function to buy tokens
     function () payable {
         buyTokens(msg.sender);
     }
 
-    // low level token purchase function
+    // main token purchase function
     function buyTokens(address beneficiary) public payable {
         require(beneficiary != 0x0);
 
@@ -77,8 +91,7 @@ contract WitcoinCrowdsale is Ownable {
         // calculate bonus
         tokens = calculateBonus(tokens);
 
-        require(nonZeroPurchase(tokens));
-        //require(validPurchase(tokens));
+        require(validPurchase(tokens));
 
         // update state
         weiRaised = weiRaised.add(weiAmount);
@@ -90,6 +103,7 @@ contract WitcoinCrowdsale is Ownable {
         forwardFunds();
     }
 
+    // altercoin token purchase function
     function buyTokensAltercoins(address beneficiary, uint256 tokens) onlyOwner public {
         require(beneficiary != 0x0);
 
@@ -105,12 +119,13 @@ contract WitcoinCrowdsale is Ownable {
         TokenPurchase(msg.sender, beneficiary, 0, tokensBonused);
     }
 
-    // send ether to the fund collection wallet
-    // override to create custom fund forwarding mechanisms
+    // send the ether to the fund collection wallet
     function forwardFunds() internal {
         wallet.transfer(msg.value);
+        //vault.deposit.value(msg.value)(msg.sender);
     }
 
+    // number of tokens issued after applying presale and sale bonuses
     function calculateBonus(uint256 tokens) internal returns (uint256) {
         uint256 bonusedTokens = tokens;
 
@@ -134,24 +149,47 @@ contract WitcoinCrowdsale is Ownable {
         return bonusedTokens;
     }
 
-    // @return true if the transaction can buy tokens
-    function validPurchase(uint256 tokens) returns (bool) {
+    // presale and sale constraints
+    function validPurchase(uint256 tokens) internal returns (bool) {
         bool withinPeriod = presale() || sale();
         bool underLimits = (presale() && tokensSold + tokens <= totalTokensPresale) || (sale() && tokensSold + tokens <= totalTokensSale);
         bool overMinimum = tokens >= minimumWitcoins;
         return withinPeriod && underLimits && overMinimum;
     }
 
-    function nonZeroPurchase(uint256 tokens) internal returns (bool) {
-        bool nonZeroPurchase = msg.value != 0;
-        return nonZeroPurchase;
+    function validPurchaseBonus(uint256 tokens) public returns (bool) {
+        uint256 bonusedTokens = calculateBonus(tokens);
+        return validPurchase(bonusedTokens);
     }
 
+    // is presale time?
     function presale() public returns(bool) {
         return now >= startPresale && now < startTime;
     }
 
+    // is sale time?
     function sale() public returns(bool) {
         return now >= startTime && now <= endTime;
     }
+
+    // finalize crowdsale
+    function finalize() onlyOwner public {
+        require(now > endTime);
+
+        if (tokensSold < goal) {
+            vault.enableRefunds();
+        } else {
+            vault.close();
+        }
+    }
+
+    function finalized() public returns(bool) {
+        return vault.finalized();
+    }
+
+    // if crowdsale is unsuccessful, investors can claim refunds here
+    function claimRefund() public returns(bool) {
+        vault.refund(msg.sender);
+    }
+
 }

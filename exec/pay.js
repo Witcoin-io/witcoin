@@ -50,7 +50,7 @@ module.exports = function(callback) {
                 var before, after, gas;
                 promises.push(instances.coin.balanceOf.call(item.address).then(function(result) {
                     before = result;
-                    return instances.crowdsale.validPurchase.call(item.amount).then(function(valid){
+                    return instances.crowdsale.validPurchaseBonus.call(item.amount).then(function(valid){
                         if (valid) {
                             return instances.crowdsale.buyTokensAltercoins(item.address, item.amount).then(function(tx){
                                 gas = tx.receipt.gasUsed;
