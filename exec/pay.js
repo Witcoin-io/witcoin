@@ -47,18 +47,19 @@ module.exports = function(callback) {
                     console.log("Error in address " + item.address);
                     return;
                 }
-                var before, after;
+                var before, after, gas;
                 promises.push(instances.coin.balanceOf.call(item.address).then(function(result) {
                     before = result;
                     return instances.crowdsale.validPurchase.call(item.amount).then(function(valid){
                         if (valid) {
                             return instances.crowdsale.buyTokensAltercoins(item.address, item.amount).then(function(tx){
+                                gas = tx.receipt.gasUsed;
                                 totalWitcoins += item.amount /  Math.pow(10, 8);
                                 return instances.coin.balanceOf.call(item.address).then(function(result) {
                                     after = result;
                                     totalWitcoinsBonus += (after - before) /  Math.pow(10, 8);
                                     if ((after - before) /  Math.pow(10, 8) !== 0) {
-                                        console.log("Minted " + (after - before) /  Math.pow(10, 8) + " to " + item.address);
+                                        console.log("Minted " + (after - before) /  Math.pow(10, 8) + " to " + item.address + ", consumed " + gas + " gas");
                                     }
                                 });
                             });
