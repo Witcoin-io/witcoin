@@ -7,8 +7,6 @@ import "./KnowledgeTokenInterface.sol";
 contract KnowledgeToken is KnowledgeTokenInterface, Ownable, ERC223Token {
 
     address public minter;
-    mapping(address => uint) balances;
-    uint256 public totalSupply;
 
     modifier onlyMinter() {
         // Only minter is allowed to proceed.
