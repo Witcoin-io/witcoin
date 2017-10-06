@@ -26,19 +26,6 @@ function DecimalsToWitcoins(val) {
     return val/100000000;
 }
 
-function BuyAlterCoin(address, witcoins) {
-    promises.push(crowdsale.buyTokensAltercoins(address, WitcoinsToDecimals(witcoins)).then(function(result) {
-        console.log("Buying "+witcoins+" tokens with altercoins");
-        console.log("Gas consumed: " + result.receipt.gasUsed);
-        return crowdsale.tokensSold.call().then(function(result) {
-            console.log("Tokens Sold: " + DecimalsToWitcoins(result));
-        });
-    }).catch(function(e) {
-        if (e.message.indexOf("invalid opcode") > -1) console.log("Not a valid purchase");
-        else console.log(e);
-    }));
-}
-
 function ClaimRefund() {
     promises.push(crowdsale.claimRefund().then(function(result) {
         console.log("Claimed refund");
@@ -139,21 +126,33 @@ contract('WitCoin', function(accounts) {
         });
     });
 
+    it("check invalid transfer altercoins", function() {
+        return WitCoin.deployed().then(function (instance) {
+            coin = instance;
+            return CrowdSale.deployed().then(function (ins2) {
+                crowdsale = ins2;
+                return crowdsale.buyTokensAltercoins(address2, WitcoinsToDecimals(50));
+            }).then(function (result) {
+                assert.equal(1, 2, "error in altercoin transaction");
+            }).catch(function(e) {
+                assert.equal(1, 1, "error in altercoin transaction");
+                return coin.balanceOf.call(address2);
+            }).then(function(balance) {
+                assert.equal(balance.valueOf(), 10000000000, "100 witcoins wasn't in the first account");
+
+                return crowdsale.buyTokensAltercoins(address3, WitcoinsToDecimals(8000000));
+            }).then(function (result) {
+                assert.equal(1, 2, "error in altercoin transaction");
+            }).catch(function(e) {
+                assert.equal(1, 1, "error in altercoin transaction");
+                return coin.balanceOf.call(address3);
+            }).then(function(balance2) {
+                assert.equal(balance2.valueOf(), 0, "0 witcoins wasn't in the first account");
+            });
+        });
+    });
+
     /*
-    checkTokensSold(0);
-
-    // Buy from altercoins 100 witcoins
-    BuyAlterCoin(address1, 100);
-
-    // Buy 2000 ether -> not enough funds in wallet
-    Buy(2000, false);
-
-    // Buy from altercoins 50 witcoins -> error because the minimum is 100
-    BuyAlterCoin(address1, 50);
-
-    // Buy from altercoins 100000 witcoins -> error because overpasses the crowdsale witcoins limit
-    BuyAlterCoin(address1, 1000000);
-
     // Buy from altercoins 100 witcoins -> error because invalid address
     BuyAlterCoin(address1, 0);
 
@@ -171,10 +170,6 @@ contract('WitCoin', function(accounts) {
     printBalance(address2);
     printBalance(address3);
     printBalance(real_address);
-
-    // Finally
-    Promise.all(promises).then(function(){
-        eventCall.stopWatching();
-    });*/
+    */
 
 });
