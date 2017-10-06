@@ -4,7 +4,6 @@ contract WitKnowledgeInterface {
 
     address author;
     address[] citations;
-    uint256 reputation;
 
     function withdrawWitcoins() ;
 
