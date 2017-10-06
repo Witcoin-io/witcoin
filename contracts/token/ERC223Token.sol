@@ -43,7 +43,7 @@ contract ERC223Token is ERC223 , ERC20Token, ERC223ContractReceiver {
   function transfer(address _to, uint _value, bytes _data, string _custom_fallback) returns (bool success) {
       
     if(isContract(_to)) {
-       require(balanceOf(msg.sender) < _value);
+       require(balanceOf(msg.sender) >= _value);
         balances[msg.sender] = balanceOf(msg.sender).sub( _value);
         balances[_to] = balanceOf(_to).add(_value);
         ERC223ContractReceiver receiver = ERC223ContractReceiver(_to);
@@ -95,7 +95,7 @@ contract ERC223Token is ERC223 , ERC20Token, ERC223ContractReceiver {
 
   //function that is called when transaction target is a contract
   function transferToContract(address _to, uint _value, bytes _data) private returns (bool success) {
-    require(balanceOf(msg.sender) < _value);
+    require(balanceOf(msg.sender) >= _value);
     balances[msg.sender] = balanceOf(msg.sender).sub(_value);
     balances[_to] = balanceOf(_to).add(_value);
       ERC223ContractReceiver receiver = ERC223ContractReceiver(_to);
