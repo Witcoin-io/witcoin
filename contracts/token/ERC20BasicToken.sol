@@ -13,6 +13,7 @@ contract ERC20BasicToken is ERC20Basic {
   using SafeMath for uint256;
 
   mapping(address => uint256) balances;
+  uint256 public totalSupply;
 
   /**
   * @dev transfer token for a specified address
@@ -36,6 +37,10 @@ contract ERC20BasicToken is ERC20Basic {
   */
   function balanceOf(address _owner) public constant returns (uint256 balance) {
     return balances[_owner];
+  }
+
+  function totalSupply() constant returns (uint256 _totalSupply) {
+    return totalSupply;
   }
 
 }

@@ -16,9 +16,8 @@ contract ERC223Token is ERC223, ERC20Token, ERC223ContractReceiver {
   string public name;
   string public symbol;
   uint8 public decimals;
-  uint256 public totalSupply;
-  
-  
+
+
   // Function to access name of token .
   function name() constant returns (string _name) {
       return name;
@@ -31,11 +30,7 @@ contract ERC223Token is ERC223, ERC20Token, ERC223ContractReceiver {
   function decimals() constant returns (uint8 _decimals) {
       return decimals;
   }
-  // Function to access total supply of tokens .
-  function totalSupply() constant returns (uint256 _totalSupply) {
-      return totalSupply;
-  }
-  
+
   
     // Function that is called when a user or another contract wants to transfer funds .
     function transfer(address _to, uint _value, bytes _data, string _custom_fallback) returns (bool success) {
