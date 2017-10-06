@@ -32,6 +32,9 @@ contract WitcoinCrowdsale is Ownable {
     // amount of tokens sold
     uint256 public tokensSold;
 
+    // amount of tokens distributed
+    uint256 public tokensDistributed;
+
     // token decimals
     uint256 public decimals;
 
@@ -56,9 +59,9 @@ contract WitcoinCrowdsale is Ownable {
     function WitcoinCrowdsale(address witAddress, address receiver) {
         token = WitCoin(witAddress);
         decimals = token.getDecimals();
-        startTime = 1508137200; // 1508137200 = 2017-10-16 07:00:00 GMT
-        //startTime = 1506845576; // 2017-10-01
-        //startPresale = 1507618800; // 1507618800 = 2017-10-10 07:00:00 GMT
+//        startTime = 1508137200; // 1508137200 = 2017-10-16 07:00:00 GMT
+        startTime = 1506845576; // 2017-10-01
+//        startPresale = 1507618800; // 1507618800 = 2017-10-10 07:00:00 GMT
         startPresale = 1504512776; // 2017-09-04
         endTime = 1509973200; // 2017-11-06 13:00:00 GMT
         rate = 880; // 1 ether = 880 witcoins
@@ -68,6 +71,7 @@ contract WitcoinCrowdsale is Ownable {
         totalTokensPresale = 1000000 * (10 ** decimals) * 65 / 100; // 65% of 1M witcoins
         totalTokensSale = 8000000 * (10 ** decimals) * 65 / 100; // 65% of 8M witcoins
         minimumWitcoins = 100 * (10 ** decimals); // 100 witcoins
+        tokensDistributed = 0;
 
         vault = new RefundVault(wallet);
     }
@@ -189,6 +193,37 @@ contract WitcoinCrowdsale is Ownable {
     // if crowdsale is unsuccessful, investors can claim refunds here
     function claimRefund() public returns(bool) {
         vault.refund(msg.sender);
+    }
+
+    // distribute tokens, only when goal reached
+    function distributeTokens() onlyOwner public {
+        require(tokensSold >= goal);
+        require(tokensSold - tokensDistributed > 100);
+
+        uint256 toDistribute = tokensSold - tokensDistributed;
+
+        // As writted in witcoin.io
+        // 1% bounties
+        // 5% nir-vana platform
+        // 10% Team
+        // 19% Witcoin.club
+
+        address bounties = 0xcfe984b059de5fbfd8875e4a7e7a16298721b823;
+        address nirvana = 0xcfe984b059de5fbfd8875e4a7e7a16298721b823;
+        address team = 0xcfe984b059de5fbfd8875e4a7e7a16298721b823;
+        address club = 0xcfe984b059de5fbfd8875e4a7e7a16298721b823;
+
+        uint256 bTokens = toDistribute * 1 / 65;
+        uint256 nTokens = toDistribute * 5 / 65;
+        uint256 tTokens = toDistribute * 10 / 65;
+        uint256 cTokens = toDistribute * 19 / 65;
+
+        token.mint(bounties, bTokens);
+        token.mint(nirvana, nTokens);
+        token.mint(team, tTokens);
+        token.mint(club, cTokens);
+
+        tokensDistributed = tokensDistributed.add(toDistribute);
     }
 
 }
