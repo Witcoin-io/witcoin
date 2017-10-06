@@ -47,6 +47,7 @@ module.exports = function(callback) {
                 promises.push(instances.coin.balanceOf.call(item.address).then(function(result) {
                     after = result;
                 }));
+
                 Promise.all(promises).then(function(){
                     console.log("Transferred " + (after - before) + " to " + item.address);
                 });
