@@ -1,6 +1,6 @@
 pragma solidity ^0.4.15;
 
-import "./KnowledgeToken.sol";
+import "./token/KnowledgeToken.sol";
 
 contract WitCoin is KnowledgeToken{
 

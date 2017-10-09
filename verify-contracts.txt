@@ -11,6 +11,7 @@ Run (in project root):
 In etherscan:
     Go to Beta validator: https://rinkeby.etherscan.io/verifyContract2
     Compiler seleccionar el que utilitza truffle. Executar "truffle version" per saber-ho. (Actualment 4.15).
+    Runs: 200
     Argument parameters abi:
         https://npm.runkit.com/ethereumjs-abi
         Code: (exec/abi-encoder.js)
