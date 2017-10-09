@@ -20,6 +20,7 @@ contract WitcoinCrowdsale is Ownable {
     uint256 public startTime;
     uint256 public startPresale;
     uint256 public endTime;
+    uint256 public endRefundingingTime;
 
     // address where funds are collected
     address public wallet;
@@ -62,8 +63,8 @@ contract WitcoinCrowdsale is Ownable {
         decimals = token.decimals();
         startTime = 1508137200; // 1508137200 = 2017-10-16 07:00:00 GMT
         startPresale = 1507618800; // 1507618800 = 2017-10-10 07:00:00 GMT
-        startPresale = 1504512776;
         endTime = 1509973200; // 2017-11-06 13:00:00 GMT
+        endRefundingingTime = 1527840776; // 01/06/2018
         rate = 880; // 1 ether = 880 witcoins
         wallet = receiver;
         goal = 1000000 * (10 ** decimals); // 1M witcoins
@@ -74,15 +75,6 @@ contract WitcoinCrowdsale is Ownable {
         tokensDistributed = 0;
 
         vault = new RefundVault(wallet);
-    }
-
-    function ChangeParameters(uint256 _startTime, uint256 _startPresale, uint256 _endTime, uint256 _goal)  public onlyOwner returns(bool) {
-        startTime = _startTime;
-        startPresale = _startPresale;
-        endTime = _endTime;
-        goal = _goal;
-
-        return true;
     }
 
     // fallback function to buy tokens
@@ -201,6 +193,12 @@ contract WitcoinCrowdsale is Ownable {
     // if crowdsale is unsuccessful, investors can claim refunds here
     function claimRefund() public returns(bool) {
         vault.refund(msg.sender);
+    }
+
+    function finalizeRefunding() onlyOwner public {
+        require(now > endRefundingingTime);
+
+        vault.finalizeEnableRefunds();
     }
 
     // Distribute tokens, only when goal reached
