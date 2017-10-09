@@ -10,15 +10,13 @@ import "./ERC20Token.sol";
  * @dev see https://github.com/Dexaran/ERC223-token-standard/tree/Recommended
  */
 
-contract ERC223Token is ERC223 , ERC20Token, ERC223ContractReceiver {
+contract ERC223Token is ERC223 , ERC20Token {
     using SafeMath for uint256;
-
-  mapping(address => uint) balances;
-  
+    
   string public name;
   string public symbol;
   uint8 public decimals;
-  uint256 public totalSupply;
+
   
   
   // Function to access name of token .
