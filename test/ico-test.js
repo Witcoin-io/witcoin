@@ -47,7 +47,25 @@ function Finalize() {
     }));
 }
 
+function AddDays(date, days) {
+    return date+days*86400000;
+}
+
 contract('WitCoin', function(accounts) {
+    // Presale time
+    it("set initial testing parameters", function() {
+        return CrowdSale.deployed().then(function(instance1) {
+            var today = new Date().getTime();
+            console.log(AddDays(today, 1));
+            console.log(AddDays(today, -1));
+            console.log(AddDays(today, 2));
+            return instance1.ChangeParameters(AddDays(today, 1), AddDays(today, -1), AddDays(today, 2), WitcoinsToDecimals(1000000));
+        }).catch(function(e) {
+            console.log(e);
+            assert.equal(1, 2);
+        });
+    });
+
     it("check initial balances", function() {
         return WitCoin.deployed().then(function(instance) {
             return instance.balanceOf.call(accounts[0]);
@@ -56,17 +74,17 @@ contract('WitCoin', function(accounts) {
         });
     });
 
-    it("check initial values", function() {
+    it("check crowdsale values", function() {
         return WitCoin.deployed().then(function (instance) {
             coin = instance;
             return CrowdSale.deployed().then(function (ins2) {
                 crowdsale = ins2;
                 return crowdsale.presale.call();
             }).then(function (result) {
-                assert.equal(result, false, "error in presale time");
+                assert.equal(result, true, "error in presale time");
                 return crowdsale.sale.call();
             }).then(function (result) {
-                assert.equal(result, true, "error in sale time");
+                assert.equal(result, false, "error in sale time");
                 return crowdsale.finalized.call();
             }).then(function (result) {
                 assert.equal(result, false, "error in finalized call");
@@ -76,7 +94,7 @@ contract('WitCoin', function(accounts) {
             });
         });
     });
-
+/*
     it("check valid transfer ether", function() {
         return WitCoin.deployed().then(function (instance) {
             coin = instance;
@@ -151,6 +169,7 @@ contract('WitCoin', function(accounts) {
             });
         });
     });
+    */
 
     /*
     // Buy from altercoins 100 witcoins -> error because invalid address
