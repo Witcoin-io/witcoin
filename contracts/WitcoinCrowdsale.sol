@@ -63,7 +63,6 @@ contract WitcoinCrowdsale is Ownable {
         decimals = token.decimals();
         startTime = 1508137200; // 1508137200 = 2017-10-16 07:00:00 GMT
         startPresale = 1507618800; // 1507618800 = 2017-10-10 07:00:00 GMT
-        startPresale = 1504512776;
         endTime = 1509973200; // 2017-11-06 13:00:00 GMT
         endRefundingingTime = 1527840776; // 01/06/2018
         rate = 880; // 1 ether = 880 witcoins
