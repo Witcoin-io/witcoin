@@ -60,12 +60,10 @@ contract WitcoinCrowdsale is Ownable {
     function WitcoinCrowdsale(address witAddress, address receiver) {
         token = WitCoin(witAddress);
         decimals = token.decimals();
-//        startTime = 1508137200; // 1508137200 = 2017-10-16 07:00:00 GMT
-        startTime = 1506845576; // 2017-10-01
-//        startPresale = 1507618800; // 1507618800 = 2017-10-10 07:00:00 GMT
-        startPresale = 1504512776; // 2017-09-04
+        startTime = 1508137200; // 1508137200 = 2017-10-16 07:00:00 GMT
+        startPresale = 1507618800; // 1507618800 = 2017-10-10 07:00:00 GMT
+        startPresale = 1504512776;
         endTime = 1509973200; // 2017-11-06 13:00:00 GMT
-        //endTime = 1507191176; // 2017-10-05
         rate = 880; // 1 ether = 880 witcoins
         wallet = receiver;
         goal = 1000000 * (10 ** decimals); // 1M witcoins
@@ -76,6 +74,15 @@ contract WitcoinCrowdsale is Ownable {
         tokensDistributed = 0;
 
         vault = new RefundVault(wallet);
+    }
+
+    function ChangeParameters(uint256 _startTime, uint256 _startPresale, uint256 _endTime, uint256 _goal)  public onlyOwner returns(bool) {
+        startTime = _startTime;
+        startPresale = _startPresale;
+        endTime = _endTime;
+        goal = _goal;
+
+        return true;
     }
 
     // fallback function to buy tokens
