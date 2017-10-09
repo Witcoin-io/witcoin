@@ -1,5 +1,5 @@
-var WitCoin = artifacts.require("./WitCoin.sol");
-var CrowdSale = artifacts.require("./WitcoinCrowdsale.sol");
+var WitCoin = artifacts.require("./token/WitCoin.sol");
+var CrowdSale = artifacts.require("./crowdsale/WitcoinCrowdsale.sol");
 var crowdsale;
 var coin;
 var promises = [];
@@ -174,6 +174,14 @@ module.exports = function(callback) {
 
             // Finally
             Promise.all(promises).then(function(){
+                coin.balanceOf.call(address1).then(function(result) {
+                    console.log("Balance " + result);
+                });
+
+                coin.totalSupply.call().then(function(result) {
+                    console.log("Total " + result);
+                });
+
                 eventCall.stopWatching();
             })
         });

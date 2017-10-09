@@ -1,6 +1,6 @@
 var fs = require('fs');
-var WitcoinPlatform = artifacts.require("./WitcoinPlatform.sol");
-var WitCoin = artifacts.require("./WitCoin.sol");
+var WitCoin = artifacts.require("./token/WitCoin.sol");
+var WitcoinPlatform = artifacts.require("./platform/WitcoinPlatform.sol");
 
 module.exports = function(callback) {
     var count = 0;

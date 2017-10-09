@@ -1,5 +1,5 @@
-var CrowdSale = artifacts.require("./WitcoinCrowdsale.sol");
-var WitCoin = artifacts.require("./WitCoin.sol");
+var WitCoin = artifacts.require("./token/WitCoin.sol");
+var CrowdSale = artifacts.require("./crowdsale/WitcoinCrowdsale.sol");
 
 var Utils = require("../lib//util.js");
 var readline = require('readline');
@@ -54,12 +54,14 @@ module.exports = function(callback) {
                         if (valid) {
                             return instances.crowdsale.buyTokensAltercoins(item.address, item.amount).then(function(tx){
                                 gas = tx.receipt.gasUsed;
-                                totalWitcoins += item.amount /  Math.pow(10, 8);
                                 return instances.coin.balanceOf.call(item.address).then(function(result) {
                                     after = result;
-                                    totalWitcoinsBonus += (after - before) /  Math.pow(10, 8);
                                     if ((after - before) /  Math.pow(10, 8) !== 0) {
+                                        totalWitcoins += item.amount /  Math.pow(10, 8);
+                                        totalWitcoinsBonus += (after - before) /  Math.pow(10, 8);
                                         console.log("Minted " + (after - before) /  Math.pow(10, 8) + " to " + item.address + ", consumed " + gas + " gas");
+                                    } else {
+                                        console.log("Error, minted 0 witcoins in address: " + item.address);
                                     }
                                 });
                             });

@@ -1,14 +1,12 @@
 pragma solidity ^0.4.15;
 
-import "../dependencies/ownership/Ownable.sol";
+import "../util/Ownable.sol";
 import "./ERC223Token.sol";
 import "./KnowledgeTokenInterface.sol";
 
 contract KnowledgeToken is KnowledgeTokenInterface, Ownable, ERC223Token {
 
     address public minter;
-    mapping(address => uint) balances;
-    uint256 public totalSupply;
 
     modifier onlyMinter() {
         // Only minter is allowed to proceed.

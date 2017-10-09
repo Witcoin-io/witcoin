@@ -1,5 +1,5 @@
-var WitCoin = artifacts.require("./WitCoin.sol");
-var WitcoinCrowdsale = artifacts.require("./WitcoinCrowdsale.sol");
+var WitCoin = artifacts.require("./token/WitCoin.sol");
+var WitcoinCrowdsale = artifacts.require("./crowdsale/WitcoinCrowdsale.sol");
 
 module.exports = function(deployer) {
     return deployer.deploy(WitCoin).then(function(){

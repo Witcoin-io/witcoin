@@ -1,7 +1,7 @@
 pragma solidity ^0.4.15;
 
-import "./WitcoinSupplyInterface.sol";
-import "./token/WitCoin.sol";
+import "./interfaces/WitcoinSupplyInterface.sol";
+import "../token/WitCoin.sol";
 
 contract WitcoinSupply is WitcoinSupplyInterface {
     address WitcoinPlatform;
