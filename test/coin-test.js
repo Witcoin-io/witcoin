@@ -1,7 +1,9 @@
 var WitCoin = artifacts.require("./WitCoin.sol");
 var CrowdSale = artifacts.require("./WitcoinCrowdsale.sol");
+var SampleContract = artifacts.require("./SampleContract.sol");
 
 var crowdsale;
+var sample;
 var coin;
 
 var address1 = "0xAec3aE5d2BE00bfC91597d7A1b2c43818d84396A";
@@ -113,14 +115,6 @@ contract('WitCoin', function(accounts) {
         });
     });
 
-    /*
-    BALANCES:
-     A1: 15
-     A2: 15
-     A3: 30
-     A4: 0
-    */
-
     it("check valid transfers", function() {
         return WitCoin.deployed().then(function (instance) {
             coin = instance;
@@ -134,20 +128,6 @@ contract('WitCoin', function(accounts) {
             return coin.balanceOf(address4);
         }).then(function (result) {
             assert.equal(result, 15 * Math.pow(10, 8), "transaction error");
-        });
-    });
-
-    it("check transfer to contract avoided", function() {
-        return WitCoin.deployed().then(function (instance) {
-            coin = instance;
-            return CrowdSale.deployed().then(function (ins2) {
-                crowdsale = ins2;
-                return coin.transfer(CrowdSale.address, 15 * Math.pow(10, 8));
-            }).catch(function (e) {
-                return coin.balanceOf.call(CrowdSale.address);
-            }).then(function (result) {
-                assert.equal(result, 0, "transfer to contract accepted");
-            });
         });
     });
 
