@@ -48,14 +48,13 @@ contract('WitCoin', function(accounts) {
             }).then(function (result) {
                 assert.equal(result * 1, 15 * Math.pow(10, 8), "initial witcoins");
                 return coin.transfer(SampleContract.address, 10 * Math.pow(10, 8));
-            }).catch(function (e) {
-                console.log("Error");
             }).then(function (result) {
-                console.log("Error");
-                assert.equal(result, 0, "transfer to contract accepted");
+                return coin.balanceOf.call(SampleContract.address);
+            }).then(function (result) {
+                assert.equal(result * 1,  10 * Math.pow(10, 8), "transfer to contract accepted");
                 return sample.sender.call();
             }).then(function (result) {
-                console.log(result);
+                assert.equal(result, sender, "last sender");
             });
         });
     });
