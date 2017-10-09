@@ -14,7 +14,7 @@ module.exports = {
             from: "0xDbdaA17aa6a854fEE1E127e1917E0a98dad607d7", // default address to use for any
             network_id: 4, // Network ID
             gas: 4612388, // Gas limit used for deploys
-            gasPrice: 9000000000 // 9 GWei
+            gasPrice: 3000000000 // 3 GWei
         }
     }
 };
