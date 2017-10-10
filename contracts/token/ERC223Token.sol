@@ -35,17 +35,6 @@ contract ERC223Token is ERC223, ERC20Token {
         return decimals;
     }
 
-
-    // Function that is called when a user or another contract wants to transfer funds .
-    function transfer(address _to, uint256 _value, bytes _data, string _custom_fallback) returns (bool success) {
-        if (isContract(_to)) {
-            ERC223ReceivingContract receiver = ERC223ReceivingContract(_to);
-            receiver.call.value(0)(bytes4(sha3(_custom_fallback)), msg.sender, _value, _data);
-        }
-        return super.transfer(_to, _value);
-    }
-
-
     // Function that is called when a user or another contract wants to transfer funds .
     function transfer(address _to, uint256 _value, bytes _data) returns (bool success) {
         if (isContract(_to)) {

@@ -15,6 +15,5 @@ contract ERC223 is ERC20 {
     function decimals() constant returns (uint8 _decimals);
 
     function transfer(address to, uint256 value, bytes data) returns (bool);
-    function transfer(address to, uint256 value, bytes data, string custom_fallback) returns (bool);
 
 }
