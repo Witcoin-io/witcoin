@@ -2,7 +2,7 @@ var Utils = require("../lib//util.js");
 
 var WitcoinPlatform = artifacts.require("./platform/WitcoinPlatform.sol");
 var WitcoinSupply = artifacts.require("./platform/WitcoinSupply.sol");
-var WitCoin = artifacts.require("./token/WitCoin.sol");
+var WitCoin = artifacts.require("./WitCoin.sol");
 
 module.exports = function(callback) {
 

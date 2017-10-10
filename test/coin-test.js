@@ -1,137 +1,134 @@
-var WitCoin = artifacts.require("./token/WitCoin.sol");
+var WitCoin = artifacts.require("./WitCoin.sol");
+var CrowdSale = artifacts.require("./WitcoinCrowdsale.sol");
+var SampleContract = artifacts.require("./SampleContract.sol");
 
+var crowdsale;
+var sample;
 var coin;
-var promises = [];
 
 var address1 = "0xAec3aE5d2BE00bfC91597d7A1b2c43818d84396A";
 var address2 = "0xf1f42f995046E67b79DD5eBAfd224CE964740Da3";
-var address3 = "0x2052d46d53107b0384503be3a11935f0b5cd5342";
-var real_address = "0x04CF6551a4e0810C32DedBd76228b715f2598A33";
+var address3 = "0xcfe984b059de5fbfd8875e4a7e7a16298721b823";
+var address4 = "0x2052d46d53107b0384503be3a11935f0b5cd5342";
 
 contract('WitCoin', function(accounts) {
 
-    it("check initial balances", function() {
+    var sender = accounts[0];
+
+    it("Check initial values", function() {
         return WitCoin.deployed().then(function(instance) {
-            return instance.balanceOf.call(accounts[0]);
+            coin = instance;
+            return coin.balanceOf.call(sender);
         }).then(function(balance) {
             assert.equal(balance.valueOf(), 0, "0 wasn't in the first account");
+            return coin.owner.call();
+        }).then(function(result) {
+            assert.equal(result, sender, "incorrect owner");
         });
     });
 
-    it("check initial values", function() {
+    it("Check mint", function() {
         return WitCoin.deployed().then(function (instance) {
             coin = instance;
-            return CrowdSale.deployed().then(function (ins2) {
-                crowdsale = ins2;
-                return crowdsale.presale.call();
-            }).then(function (result) {
-                assert.equal(result, false, "error in presale time");
-                return crowdsale.sale.call();
-            }).then(function (result) {
-                assert.equal(result, true, "error in sale time");
-                return crowdsale.finalized.call();
-            }).then(function (result) {
-                assert.equal(result, false, "error in finalized call");
-                return crowdsale.tokensSold.call();
-            }).then(function (result) {
-                assert.equal(result, 0);
-            });
+            return coin.mint(address3, 10 * (Math.pow(10, 8)));
+        }).then(function (result) {
+            assert.equal(1, 2, "error onlyMinter");
+        }).catch(function(e) {
+            assert.equal(1, 1, "ok onlyMinter");
+            return coin.changeMinter(sender, {from: address3});
+        }).catch(function(e) {
+            assert.equal(1, 1, "ok onlyOwner");
+            return coin.changeMinter(sender, {from: sender});
+        }).then(function (result) {
+            return coin.mint(address3, 45 * (Math.pow(10, 8)));
+        }).then(function (result) {
+            return coin.balanceOf.call(address3);
+        }).then(function (result) {
+            assert.equal(result, 45 * (Math.pow(10, 8)), "unable to mint");
+            return coin.totalSupply.call();
+        }).then(function (result) {
+            assert.equal(result, 45 * (Math.pow(10, 8)), "total supply error");
+            return coin.mint(address2, 15 * (Math.pow(10, 8)));
+        }).then(function (result) {
+            return coin.balanceOf.call(address2);
+        }).then(function (result) {
+            assert.equal(result, 15 * (Math.pow(10, 8)), "unable to mint");
+            return coin.totalSupply.call();
+        }).then(function (result) {
+            assert.equal(result, 60 * (Math.pow(10, 8)), "total supply error");
         });
     });
 
-    it("check valid transfer ether", function() {
+    it("Check ERC20 Approve", function() {
         return WitCoin.deployed().then(function (instance) {
             coin = instance;
-            return CrowdSale.deployed().then(function (ins2) {
-                crowdsale = ins2;
-                return crowdsale.send(EtherToWei(1));
-            }).then(function (result) {
-                assert.equal(result.receipt.gasUsed > 0, true, "error in ether transaction 1");
-                return crowdsale.send(EtherToWei(2));
-            }).then(function (result) {
-                assert.equal(result.receipt.gasUsed > 0, true, "error in ether transaction 2");
-                return coin.balanceOf.call(accounts[0]);
-            }).then(function(balance) {
-                assert.equal(balance.valueOf(), 264000000000, "100 witcoins wasn't in the first account");
-            });
+            return coin.transferFrom(address3, address1, 10 * (Math.pow(10, 8)), {from: address2});
+        }).then(function (result) {
+            assert.equal(1, 2, "error not approved");
+        }).catch(function(e) {
+            return coin.approve(address2, 10 * (Math.pow(10, 8)), {from: address3});
+        }).then(function (result) {
+            return coin.transferFrom(address3, address1, 10 * (Math.pow(10, 8)), {from: address2});
+        }).then(function (result) {
+            return coin.balanceOf.call(address1);
+        }).then(function (result) {
+            assert.equal(result, 10 * (Math.pow(10, 8)), "transferFrom error");
+            return coin.balanceOf.call(address3);
+        }).then(function (result) {
+            assert.equal(result, 35 * (Math.pow(10, 8)), "transferFrom error");
         });
     });
 
-    it("check invalid transfer ether", function() {
+    it("Check ERC20 Approve Increase / Decrease", function() {
+        var preBalance1 = 0;
+        var preBalance3 = 0;
         return WitCoin.deployed().then(function (instance) {
             coin = instance;
-            return CrowdSale.deployed().then(function (ins2) {
-                crowdsale = ins2;
-                return crowdsale.send(EtherToWei(2000));
-            }).then(function (result) {
-                assert.equal(1, 2, "error in ether transaction 2000");
-            }).catch(function(e) {
-                assert.equal(1, 1);
-            });
+            return coin.balanceOf.call(address1);
+        }).then(function (result) {
+            preBalance1 = result * 1;
+            return coin.balanceOf.call(address3);
+        }).then(function (result) {
+            preBalance3 = result * 1;
+            return coin.approve(address2, 10 * (Math.pow(10, 8)), {from: address3});
+        }).then(function (result) {
+            return coin.decreaseApproval(address2, 8 * (Math.pow(10, 8)), {from: address3});
+        }).then(function (result) {
+            return coin.transferFrom(address3, address1, 3 * (Math.pow(10, 8)), {from: address2});
+        }).then(function (result) {
+            assert.equal(1, 2, "decreaseApproval ignored");
+        }).catch(function(e) {
+            return coin.increaseApproval(address2, 3 * (Math.pow(10, 8)), {from: address3});
+        }).then(function (result) {
+            return coin.transferFrom(address3, address1, 7 * (Math.pow(10, 8)), {from: address2});
+        }).then(function (result) {
+            assert.equal(1, 2, "increaseApproval ignored");
+        }).catch(function(e) {
+            return coin.transferFrom(address3, address1, 5 * (Math.pow(10, 8)), {from: address2});
+        }).then(function (result) {
+            return coin.balanceOf.call(address1);
+        }).then(function (result) {
+            assert.equal(result * 1, preBalance1 + 5 * (Math.pow(10, 8)), "decreaseApproval / increaseApproval error account 1");
+            return coin.balanceOf.call(address3);
+        }).then(function (result) {
+            assert.equal(result * 1, preBalance3 - 5 * (Math.pow(10, 8)), "decreaseApproval / increaseApproval error account 3");
         });
     });
 
-    it("check valid transfer altercoins", function() {
+    it("check valid transfers", function() {
         return WitCoin.deployed().then(function (instance) {
             coin = instance;
-            return CrowdSale.deployed().then(function (ins2) {
-                crowdsale = ins2;
-                return crowdsale.buyTokensAltercoins(address2, WitcoinsToDecimals(100));
-            }).then(function (result) {
-                assert.equal(1, 1, "error in altercoin transaction");
-                return coin.balanceOf.call(address2);
-            }).catch(function(e) {
-                assert.equal(1, 2, "error in altercoin transaction");
-            }).then(function(balance) {
-                assert.equal(balance.valueOf(), 10000000000, "100 witcoins wasn't in the first account");
-            });
+            return coin.transfer(address4, 20 * (Math.pow(10, 8)), {from: address1});
+        }).then(function (result) {
+            assert.equal(1, 2, "not enough founds");
+        }).catch(function(e) {
+            assert.equal(1, 1, "not enough founds");
+            return coin.transfer(address4, 15 * (Math.pow(10, 8)), {from: address3});
+        }).then(function (result) {
+            return coin.balanceOf(address4);
+        }).then(function (result) {
+            assert.equal(result, 15 * Math.pow(10, 8), "transaction error");
         });
     });
-
-    it("check invalid transfer altercoins", function() {
-        return WitCoin.deployed().then(function (instance) {
-            coin = instance;
-            return CrowdSale.deployed().then(function (ins2) {
-                crowdsale = ins2;
-                return crowdsale.buyTokensAltercoins(address2, WitcoinsToDecimals(50));
-            }).then(function (result) {
-                assert.equal(1, 2, "error in altercoin transaction");
-            }).catch(function(e) {
-                assert.equal(1, 1, "error in altercoin transaction");
-                return coin.balanceOf.call(address2);
-            }).then(function(balance) {
-                assert.equal(balance.valueOf(), 10000000000, "100 witcoins wasn't in the first account");
-
-                return crowdsale.buyTokensAltercoins(address3, WitcoinsToDecimals(8000000));
-            }).then(function (result) {
-                assert.equal(1, 2, "error in altercoin transaction");
-            }).catch(function(e) {
-                assert.equal(1, 1, "error in altercoin transaction");
-                return coin.balanceOf.call(address3);
-            }).then(function(balance2) {
-                assert.equal(balance2.valueOf(), 0, "0 witcoins wasn't in the first account");
-            });
-        });
-    });
-
-    /*
-    // Buy from altercoins 100 witcoins -> error because invalid address
-    BuyAlterCoin(address1, 0);
-
-    // Finalize crowdsale
-    Finalize();
-
-    promises.push(crowdsale.finalized.call().then(function(result) {
-        console.log("Finalized? " + result);
-    }));
-
-    // Claim refund -> not possible because crowdsale has not finished
-    ClaimRefund();
-
-    printBalance(address1);
-    printBalance(address2);
-    printBalance(address3);
-    printBalance(real_address);
-    */
 
 });

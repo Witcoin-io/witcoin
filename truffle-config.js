@@ -15,6 +15,14 @@ module.exports = {
             network_id: 4, // Network ID
             gas: 4612388, // Gas limit used for deploys
             gasPrice: 3000000000 // 3 GWei
+        },
+        real: {
+            host: "localhost",
+            port: 8545,
+            network_id: 1,
+            from: "0x73645B5ce9B0c3f3bb622d4FFE89478C88D80E0d",
+            gas: 2000000,
+            gasPrice: 4000000000 // 4 GWei
         }
     }
 };
