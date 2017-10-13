@@ -38,6 +38,7 @@ function validateTransaction(coin, tx) {
 
                 // Get value
                 var value = parser.getTransactionValue(parsed);
+                var integer = parser.toIntegerValue(value);
 
                 // Get origin addresses
                 var origin = parser.getOriginAddresses(parsed);
@@ -47,9 +48,10 @@ function validateTransaction(coin, tx) {
 
                 // ALL OK
                 console.log("CONFIRMED");
-                console.log("  Value:  " + value);
-                console.log("  Origin: " + origin);
-                console.log("  Time:   " + time);
+                console.log("  Value:   " + value);
+                console.log("  Integer: " + integer);
+                console.log("  Origin:  " + origin);
+                console.log("  Time:    " + time);
             } else {
                 console.log("PENDING - Confirmations: " + parser.getConfirmations(parsed));
             }
@@ -61,7 +63,7 @@ function validateTransaction(coin, tx) {
 
 // validateTransaction("BTC", "a2afb522edeba67ae593c683154da45b231d59ffccd18806cec38ecd21994a2d");
 // validateTransaction("BCH", "41efd209e31fe5e783079e333cb0a860e3e11e992fc4175f19ab40641cd1d0f7");
-// validateTransaction("LTC", "83b654f3070a8268a36c5ff60c6201fe242831818a30fda77c0662e141053244");
+validateTransaction("LTC", "83b654f3070a8268a36c5ff60c6201fe242831818a30fda77c0662e141053244");
 // validateTransaction("DASH", "158ce8015e45c50a524c26079719d026c010976206624ac834011226671b6226");
 // validateTransaction("BNT", "0x2cab2892eea9695d815473511b0f3c8e6a9b57929a9bf079c028b3ed4b9c4e75");
-validateTransaction("ANT", "0x0596718ac8ab05bc963c2f2ae70887232fc8ef04fc6faeb97fba0ab367588ceb");
+// validateTransaction("ANT", "0x0596718ac8ab05bc963c2f2ae70887232fc8ef04fc6faeb97fba0ab367588ceb");
