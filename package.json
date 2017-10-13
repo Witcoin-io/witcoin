@@ -6,6 +6,7 @@
   "license": "GPL",
   "dependencies": {
     "file-system": "2.2.2",
+    "node-sql-db": "^1.1.2",
     "request": "2.83.0"
   }
 }

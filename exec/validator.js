@@ -1,6 +1,42 @@
 var request = require('request');
 
+
 module.exports = function(callback) {
+
+    class Database{
+        constructor(options){
+            var SQL = require("node-sql-db");
+            this.db=new SQL.Db(options);
+        }
+
+        insertTransaction(hash,coin){
+            //check existing transaction
+            this.db.query("select count (*) as count from transactions where hash= ? and coin = ?",hash,coin, function (err, rows) {
+                //no existing transaction
+                if(parseInt(rows[0].count)!=0){
+                    this.db.execute("insert transactions (hash,coin) values (?,?)",
+                                    hash, coin,function (err, rows) {
+                            console.log(err);
+                        });
+
+                }
+            }.call(this));
+        }
+        getTransaction(hash,coin){
+            this.db.query("select * transactions where hash= ? and coin = ?",hash,coin, function (err, rows) {
+                console.log(rows);
+            });
+        }
+
+        getData(){
+            this.db.query("select * from test1 where id=0", function (err, rows) {
+                console.log(rows);
+            });
+        }
+        close(){
+            this.db.close();
+        }
+    }
 
 
      // BY TRANSACTION HASH
@@ -64,6 +100,26 @@ module.exports = function(callback) {
     var coin = "LTC";
     var tx = "67859ae0983d13d128becbeeffc76106d11fe5198daefc040eef5136bbb87422";
 
-    confirmTransaction(coin, tx);
+    //confirmTransaction(coin, tx);
+    //initDB();
 
+    var bdConfig={
+        platform: "MySQL",
+        host: "127.0.0.1",
+        user: "witcoin",
+        password: "gJafOWhdauYY89w9bl6V",
+        database: "witcoin_ico",
+        schema: [{
+        name: "test",
+        sql: ["create table if not exists transfer_intentions (id integer primary key AUTO_INCREMENT, origin_address text NOT NULL, coin integer NOT NULL, ether_address text NOT NULL ,created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP )",
+            "create table if not exists transactions(id integer primary key AUTO_INCREMENT, hash text NOT NULL, coin text NOT NULL, amount integer, origin_address text ,status integer not null default 0,created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP )"]
+    }]
+    };
+   // database.initialize(bdConfig);
+   // database.getdata();
+database=new Database(bdConfig);
+
+ database.insertTransaction('asdfasfd','asdfasfd');
+//database.insertTransactions();
+    database.close();
 };
