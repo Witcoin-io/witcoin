@@ -7,7 +7,7 @@ let DashParser = require("./lib/parsers/DashParser.js");
 let BancorParser = require("./lib/parsers/BancorParser.js");
 let AragonParser = require("./lib/parsers/AragonParser.js");
 
-var getSpecificParser = function(coin){
+function getSpecificParser(coin){
     var parser;
     if (coin === "BTC") {
         parser = new BitcoinParser();
@@ -23,9 +23,9 @@ var getSpecificParser = function(coin){
         parser = new AragonParser();
     }
     return parser;
-};
+}
 
-var validateTransaction = function(coin, tx){
+function validateTransaction(coin, tx) {
     var parser = getSpecificParser(coin);
     console.log(parser.getTxApiUrl(tx));
 
@@ -39,13 +39,17 @@ var validateTransaction = function(coin, tx){
                 // Get value
                 var value = parser.getTransactionValue(parsed);
 
-                // Get value
+                // Get origin addresses
                 var origin = parser.getOriginAddresses(parsed);
+
+                // Get timestamp
+                var time = parser.getTimestamp(parsed);
 
                 // ALL OK
                 console.log("CONFIRMED");
-                console.log("  Value: " + value);
+                console.log("  Value:  " + value);
                 console.log("  Origin: " + origin);
+                console.log("  Time:   " + time);
             } else {
                 console.log("PENDING - Confirmations: " + parser.getConfirmations(parsed));
             }
@@ -53,9 +57,9 @@ var validateTransaction = function(coin, tx){
             console.log("ERROR");
         }
     });
-};
+}
 
-//validateTransaction("BTC", "a2afb522edeba67ae593c683154da45b231d59ffccd18806cec38ecd21994a2d");
+// validateTransaction("BTC", "a2afb522edeba67ae593c683154da45b231d59ffccd18806cec38ecd21994a2d");
 // validateTransaction("BCH", "41efd209e31fe5e783079e333cb0a860e3e11e992fc4175f19ab40641cd1d0f7");
 // validateTransaction("LTC", "83b654f3070a8268a36c5ff60c6201fe242831818a30fda77c0662e141053244");
 // validateTransaction("DASH", "158ce8015e45c50a524c26079719d026c010976206624ac834011226671b6226");

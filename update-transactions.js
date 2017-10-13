@@ -7,7 +7,7 @@ let DashParser = require("./lib/parsers/DashParser.js");
 let BancorParser = require("./lib/parsers/BancorParser.js");
 let AragonParser = require("./lib/parsers/AragonParser.js");
 
-var getSpecificParser = function(coin){
+function getSpecificParser(coin){
     var parser;
     if (coin === "BTC") {
         parser = new BitcoinParser();
@@ -23,9 +23,9 @@ var getSpecificParser = function(coin){
         parser = new AragonParser();
     }
     return parser;
-};
+}
 
-var getTransactions = function(coin){
+function getTransactions(coin){
     var parser = getSpecificParser(coin);
 
     request(parser.getAdrApiUrl(), function (error, response, body, callback) {
@@ -44,9 +44,7 @@ var getTransactions = function(coin){
             console.log("ERROR");
         }
     });
-};
-
-// Bitcoin
+}
 
 getTransactions("BTC");
 getTransactions("BCH");
