@@ -1,5 +1,7 @@
 let request = require('request');
 
+let DataBase = require('./lib/DataBase');
+
 let BitcoinParser = require("./lib/parsers/BitcoinParser.js");
 let BitcoinCashParser = require("./lib/parsers/BitcoinCashParser.js");
 let LitecoinParser = require("./lib/parsers/LitecoinParser.js");
@@ -36,9 +38,11 @@ function getTransactions(coin){
 
             var txs = parser.getTransactions(parsed);
 
-            // console.log(txs);
-            console.log(coin + ": " + txs.length);
-            console.log(txs[0]);
+            txs.forEach(function(tx){
+                database.insertTransaction(tx, coin, 0, function (err, rows){ });
+            });
+
+            // database.close();
 
         } else {
             console.log("ERROR");
@@ -46,9 +50,11 @@ function getTransactions(coin){
     });
 }
 
-getTransactions("BTC");
-getTransactions("BCH");
-getTransactions("LTC");
-getTransactions("DASH");
+var database = new DataBase({});
+
+// getTransactions("BTC");
+// getTransactions("BCH");
+// getTransactions("LTC");
+// getTransactions("DASH");
 getTransactions("BNT");
 getTransactions("ANT");
