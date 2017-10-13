@@ -1,11 +1,11 @@
 let request = require('request');
 
-let BitcoinParser = require("./lib/BitcoinParser.js");
-let BitcoinCashParser = require("./lib/BitcoinCashParser.js");
-let LitecoinParser = require("./lib/LitecoinParser.js");
-let DashParser = require("./lib/DashParser.js");
-let BancorParser = require("./lib/BancorParser.js");
-let AragonParser = require("./lib/AragonParser.js");
+let BitcoinParser = require("./lib/parsers/BitcoinParser.js");
+let BitcoinCashParser = require("./lib/parsers/BitcoinCashParser.js");
+let LitecoinParser = require("./lib/parsers/LitecoinParser.js");
+let DashParser = require("./lib/parsers/DashParser.js");
+let BancorParser = require("./lib/parsers/BancorParser.js");
+let AragonParser = require("./lib/parsers/AragonParser.js");
 
 var getSpecificParser = function(coin){
     var parser;
