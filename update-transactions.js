@@ -39,16 +39,13 @@ function getTransactions(coin){
             var txs = parser.getTransactions(parsed);
 
             var database = new DataBase({});
-            var promises = [];
 
             txs.forEach(function (tx) {
-                promises.push(database.insertTransaction(tx, coin));
+                database.insertTransaction(tx, coin);
             });
 
             // Close database
-            Promise.all(promises).then(function(){
-                database.close();
-            });
+            database.close();
 
         } else {
             console.log("Error");
@@ -57,8 +54,8 @@ function getTransactions(coin){
 }
 
 getTransactions("BTC");
-// getTransactions("BCH");
-// getTransactions("LTC");
-// getTransactions("DASH");
-// getTransactions("BNT");
-// getTransactions("ANT");
+getTransactions("BCH");
+getTransactions("LTC");
+getTransactions("DASH");
+getTransactions("BNT");
+getTransactions("ANT");
