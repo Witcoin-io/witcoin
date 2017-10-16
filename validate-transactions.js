@@ -30,7 +30,6 @@ function getSpecificParser(coin){
 function validateTransaction(coin, tx) {
     return (new Promise(function(resolve, reject) {
         var parser = getSpecificParser(coin);
-        console.log(parser.getTxApiUrl(tx));
 
         request(parser.getTxApiUrl(tx), function (error, response, body, callback) {
             if (!error && response.statusCode === 200 && !parser.emptyBody(body)) {
@@ -50,14 +49,7 @@ function validateTransaction(coin, tx) {
                     var time = parser.getTimestamp(parsed);
 
                     // ALL OK, Validate
-
                     database.validateTransaction(tx,coin,integer,origin,time);
-
-                    // console.log("CONFIRMED");
-                    // console.log("  Value:   " + value);
-                    // console.log("  Integer: " + integer);
-                    // console.log("  Origin:  " + origin);
-                    // console.log("  Time:    " + time);
 
                     resolve(true);
                 } else {
