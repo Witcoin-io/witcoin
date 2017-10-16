@@ -32,29 +32,33 @@ function getTransactions(coin){
 
     request(parser.getAdrApiUrl(), function (error, response, body, callback) {
         if (body === "Not found" || body === "{}") {
-            console.log("ERROR");
+            console.log("Error");
         } else if (!error && response.statusCode === 200) {
             var parsed = JSON.parse(body);
 
             var txs = parser.getTransactions(parsed);
 
-            txs.forEach(function(tx){
-                database.insertTransaction(tx, coin, 0, function (err, rows){ });
+            var database = new DataBase({});
+            var promises = [];
+
+            txs.forEach(function (tx) {
+                promises.push(database.insertTransaction(tx, coin));
             });
 
-            // database.close();
+            // Close database
+            Promise.all(promises).then(function(){
+                database.close();
+            });
 
         } else {
-            console.log("ERROR");
+            console.log("Error");
         }
     });
 }
 
-var database = new DataBase({});
-
-// getTransactions("BTC");
+getTransactions("BTC");
 // getTransactions("BCH");
 // getTransactions("LTC");
 // getTransactions("DASH");
-getTransactions("BNT");
-getTransactions("ANT");
+// getTransactions("BNT");
+// getTransactions("ANT");
