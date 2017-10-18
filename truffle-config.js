@@ -6,7 +6,7 @@ module.exports = {
             network_id: "*",
             from: "0xAec3aE5d2BE00bfC91597d7A1b2c43818d84396A",
             gas: 4712387,
-            gasPrice: 9000000000 // 9 GWei
+            gasPrice: 1000000000 // 1 GWei
         },
         rinkeby: {
             host: "localhost", // Connect to geth on the specified ip
@@ -22,7 +22,7 @@ module.exports = {
             network_id: 1,
             from: "0x73645B5ce9B0c3f3bb622d4FFE89478C88D80E0d",
             gas: 2000000,
-            gasPrice: 4000000000 // 4 GWei
+            gasPrice: 1000000000 // 1 GWei
         }
     }
 };
