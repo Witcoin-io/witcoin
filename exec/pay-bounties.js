@@ -7,7 +7,7 @@ let Utils = require("../lib//util.js");
 
 module.exports = function(callback) {
 
-    var sender = "0x73645B5ce9B0c3f3bb622d4FFE89478C88D80E0d";
+    var sender = "0x057Afd5422524d5Ca20218d07048300832323360";
 
     var filename = "bounties.csv";
     var payedFile = "payed.txt";
