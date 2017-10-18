@@ -26,7 +26,7 @@ module.exports = function(callback) {
     // };
 
     // Deploy multiple contracts and parse its returned deployed instances
-    Utils.deployMultiple(instances).then(function (deployed) {
+    Utils.atMultiple(instances).then(function (deployed) {
         instances = Utils.parseDeployed(instances, deployed);
 
         var insertOrUpdate = function(address, amount) {
